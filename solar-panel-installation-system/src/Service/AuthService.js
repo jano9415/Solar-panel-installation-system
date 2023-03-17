@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const API_URL = "http://localhost/";
+const API_URL = "http://localhost:8080/api/auth";
 
 //Felhasználó létrehozása
 const createUser = (userName, emailAddress, password) => {
@@ -17,27 +17,45 @@ const login = (userName, password) => {
 
     //Teszt adatok
     let expert = {
-        userName: "laci",
+        userName: "bela",
         firstName: "László",
         lastName: "Nagy",
         emailAddress: "lacika@gmail.com",
         role: "expert"
     }
     let storeEmployee = {
-        userName: "laci",
+        userName: "balazs",
         firstName: "László",
         lastName: "Nagy",
         emailAddress: "lacika@gmail.com",
-        role: "expert"
+        role: "storeemployee"
     }
     let storeLeader = {
         userName: "laci",
         firstName: "László",
         lastName: "Nagy",
         emailAddress: "lacika@gmail.com",
-        role: "expert"
+        role: "storeleader"
     }
-    localStorage.setItem("user", JSON.stringify(expert));
+    let admin = {
+        userName: "geza",
+        firstName: "László",
+        lastName: "Nagy",
+        emailAddress: "lacika@gmail.com",
+        role: "admin"
+    }
+    if(userName === "expert"){
+        localStorage.setItem("user", JSON.stringify(expert));
+    }
+    if(userName === "storeemployee"){
+        localStorage.setItem("user", JSON.stringify(storeEmployee));
+    }
+    if(userName === "storeleader"){
+        localStorage.setItem("user", JSON.stringify(storeLeader));
+    }
+    if(userName === "admin"){
+        localStorage.setItem("user", JSON.stringify(admin));
+    }
 
     /*return axios.post(API_URL, {
         userName,

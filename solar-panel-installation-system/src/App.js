@@ -7,6 +7,9 @@ import CreateOrModifyPart from './Components/CreateOrModifyPartComponent';
 import ListPartsComponent from './Components/ListPartsComponent';
 import AuthService from './Service/AuthService';
 import { useEffect, useState } from 'react';
+import ListBoxesComponent from './Components/ListBoxesComponent';
+import ListProjectsComponent from './Components/ListProjectsComponent';
+import CreateOrModifyProjectComponent from './Components/CreateOrModifyProjectComponent';
 
 function App() {
 
@@ -35,21 +38,41 @@ function App() {
                 <span>Kezdőlap</span>
               </Link>
             </li>
-            <li>
-              <Link to={"/createuser"} className='nav-link'>
-                <span>Felhasználó létrehozása</span>
-              </Link>
-            </li>
-            <li>
-              <Link to={"/createpart"} className='nav-link'>
-                <span>Alkatrész hozzáadása</span>
-              </Link>
-            </li>
-            <li>
-              <Link to={"/listparts"} className='nav-link'>
-                <span>Alkatrészek</span>
-              </Link>
-            </li>
+            {currentUser && currentUser.role === "admin" && (
+              <li>
+                <Link to={"/createuser"} className='nav-link'>
+                  <span>Felhasználó létrehozása</span>
+                </Link>
+              </li>
+            )}
+            {currentUser && currentUser.role === "storeleader" && (
+              <li>
+                <Link to={"/createpart"} className='nav-link'>
+                  <span>Alkatrész hozzáadása</span>
+                </Link>
+              </li>
+            )}
+            {currentUser && currentUser.role === "storeleader" && (
+              <li>
+                <Link to={"/listparts"} className='nav-link'>
+                  <span>Alkatrészek</span>
+                </Link>
+              </li>
+            )}
+            {currentUser && currentUser.role === "expert" && (
+              <li>
+                <Link to={"/listprojects"} className='nav-link'>
+                  <span>Projektek</span>
+                </Link>
+              </li>
+            )}
+            {currentUser && currentUser.role === "expert" && (
+              <li>
+                <Link to={"/createproject"} className='nav-link'>
+                  <span>Új projekt</span>
+                </Link>
+              </li>
+            )}
             {currentUser ? (
               <li>
                 <Link to={"/login"} className='nav-link' onClick={logout}>
@@ -79,6 +102,9 @@ function App() {
             <Route path='/createpart' element={<CreateOrModifyPart />} />
             <Route path='/createpart/:id' element={<CreateOrModifyPart />} />
             <Route path='/listparts' element={<ListPartsComponent />} />
+            <Route path='/listboxes/:id' element = {<ListBoxesComponent />} />
+            <Route path='/listprojects' element = { <ListProjectsComponent />} />
+            <Route path='/createproject' element = { <CreateOrModifyProjectComponent />} />
           </Routes>
         </div>
 

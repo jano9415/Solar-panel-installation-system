@@ -64,6 +64,14 @@ const CreateuserComponent = () => {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)} />
                                 </div>
+                                <div>
+                                    <select className='form-select mt-2 mb-2'>
+                                        <option>admin</option>
+                                        <option>expert</option>
+                                        <option>storeemployee</option>
+                                        <option>storeleader</option>
+                                    </select>
+                                </div>
                                 <button className='btn btn-success m-2' onClick={(e) => createUser(e)}>Mentés</button>
                                 <Link to="/">
                                     <button className='btn btn-danger'>Mégse</button>

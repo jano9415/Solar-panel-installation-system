@@ -14,21 +14,24 @@ const CreateOrModifyPartComponent = () => {
     //Új alkatrész hozzáadása vagy meglévő módosítása
     const createOrModifyPart = (e) => {
         e.preventDefault();
-        const part = {id, partName, price, maxPieceInBox}
+        const part = {partName, price, maxPieceInBox}
 
         if(id){
             //Alkatrész módosítása
-            PartService.modifyPart()
+            PartService.modifyPart(id,part)
             navigate("/listparts");
         }
         else{
             //Új alkatrész hozzáadása
+            PartService.createPart(part)
+            navigate("/listparts");
+            /*
             PartService.createPart(part).then(() => {
                 navigate("/listparts");
             },
             (error) => {
                 console.log(error)
-            })
+            })*/
         }
 
     }

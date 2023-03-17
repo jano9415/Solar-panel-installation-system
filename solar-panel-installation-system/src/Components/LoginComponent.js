@@ -91,7 +91,7 @@ const LoginComponent = () => {
                             />
                         </div>
 
-                        <div className="form-group">
+                        <div className="form-group m-2">
                             <button className="btn btn-primary btn-block mt-2" disabled={loading}>
                                 {loading && (
                                     <span className="spinner-border spinner-border-sm"></span>

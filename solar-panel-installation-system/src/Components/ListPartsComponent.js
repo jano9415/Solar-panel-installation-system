@@ -24,7 +24,7 @@ const ListPartsComponent = () => {
 
     return (
         <div>
-        <h2 className='text-center'>Alkalmazottak</h2>
+        <h2 className='text-center'>Alkatrészek</h2>
         <Link to="/createpart" className='btn btn-primary mb-2'>Új alkatrész hozzáadása</Link>
         <div className='row' >
             <table className='table table-striped table-bordered' >
@@ -47,6 +47,7 @@ const ListPartsComponent = () => {
                                     <td>{part.maxPieceInBox}</td>
                                     <td>
                                         <Link to={`/createpart/${part.id}`} className='btn btn-info m-1'>Módosítás</Link>
+                                        <Link to={`/listboxes/${part.id}`} className='btn btn-info m-1'>Bevételezés</Link>
                                     </td>
                                 </tr>
                         )
