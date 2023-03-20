@@ -1,8 +1,9 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/part";
+const API_URL = "http://localhost:8080/api/part/";
 
 //Teszt adatok
+
 let parts = [
     {
         id: 1,
@@ -10,7 +11,8 @@ let parts = [
         price: 18000,
         maxPieceInBox: 3,
         allAvailableNumber: 13,
-        allReservedNumber: 4
+        allReservedNumber: 4,
+        preReservedNumber: 0
     },
     {
         id: 2,
@@ -18,7 +20,8 @@ let parts = [
         price: 56000,
         maxPieceInBox: 3,
         allAvailableNumber: 0,
-        allReservedNumber: 0
+        allReservedNumber: 0,
+        preReservedNumber: 3
     },
     {
         id: 3,
@@ -26,7 +29,8 @@ let parts = [
         price: 12000,
         maxPieceInBox: 5,
         allAvailableNumber: 0,
-        allReservedNumber: 2
+        allReservedNumber: 0,
+        preReservedNumber: 1
     },
     {
         id: 4,
@@ -34,7 +38,8 @@ let parts = [
         price: 24000,
         maxPieceInBox: 3,
         allAvailableNumber: 5,
-        allReservedNumber: 1
+        allReservedNumber: 1,
+        preReservedNumber: 0
     },
     {
         id: 5,
@@ -42,7 +47,8 @@ let parts = [
         price: 143000,
         maxPieceInBox: 1,
         allAvailableNumber: 17,
-        allReservedNumber: 5
+        allReservedNumber: 5,
+        preReservedNumber: 0
     },
 ]
 
@@ -50,44 +56,44 @@ let parts = [
 const createPart = (part) => {
 
     //Teszt
-    parts.push(part);
+    //parts.push(part);
 
-    /*return axios.post(API_URL, {
-        part
-    });*/
+    return axios.post(API_URL + "save", part);
 };
 
 //Alkatrész módosítása
 const modifyPart = (id, part) => {
     //Teszt
+    /*
     const searchIndex = parts.findIndex((part) => part.id == id);
 
     parts[searchIndex].partName = part.partName;
     parts[searchIndex].price = part.price;
     parts[searchIndex].maxPieceInBox = part.maxPieceInBox;
+    */
 
-    /*return axios.post(API_URL + id, {
-    part
-});*/
+    return axios.put(API_URL + "update/" + id, part);
 
 };
 
 //Keresés id szerint
 const findById = (id) => {
     //Teszt
+    /*
     const searchIndex = parts.findIndex((part) => part.id == id);
     return parts[searchIndex];
+    */
 
-    //return axios.get(API_URL + id);
+    return axios.get(API_URL + "findbyid/" + id);
 
 };
 
 //Összes alkatrész lekérése
 const getParts = () => {
     //Teszt 
-    return parts;
+    //return parts;
 
-    //return axios.get(API_URL);
+    return axios.get(API_URL + "findall");
 }
 
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/project";
+const API_URL = "http://localhost:8080/api/project/";
 
 
 //Teszt adatok
@@ -56,22 +56,53 @@ let projects = [
 //Összes project lekérése
 const findAll = () => {
 
-    //return axios.get(API_URL);
-    return projects;
+    return axios.get(API_URL + "findall");
+    //return projects;
 }
 
 //Új projekt létrehozása
 const createProject = (project) => {
 
-    return axios.post(API_URL, 
-        {
-            project
-        })
+    return axios.post(API_URL, project)
+}
+
+//Meglévő projekt módosítása
+//Alkatrész módosítása
+const modifyProject = (id, project) => {
+
+    return axios.post(API_URL + id, project);
+
+};
+
+//Keresés id szerint
+const findById = (id) => {
+    //Teszt
+    const searchIndex = projects.findIndex((project) => project.id == id);
+    return projects[searchIndex];
+
+    //return axios.get(API_URL + id);
+
+};
+
+//Alkatrész lefoglalása
+const reservePart = (projectId, partId, reservedNumber) => {
+
+    return axios.get(API_URL + projectId + partId, reservePart)
+}
+
+//Előfoglalás leadása az alkatrészre
+const preReservePart = (projectId, partId, preReservedNumber) => {
+    return axios.get(API_URL + projectId + partId, preReservePart)
+
 }
 
 const ProjectService = {
     findAll,
-    createProject
+    createProject,
+    modifyProject,
+    findById,
+    reservePart,
+    preReservePart
 
 };
 

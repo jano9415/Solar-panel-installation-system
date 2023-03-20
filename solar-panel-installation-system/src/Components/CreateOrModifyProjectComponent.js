@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import ProjectService from '../Service/ProjectService';
 
-const CreateOrModifyProjectComponent = () =>  {
+const CreateOrModifyProjectComponent = () => {
 
     const [projectLocation, setProjectLocation] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
@@ -12,33 +12,78 @@ const CreateOrModifyProjectComponent = () =>  {
     const [projectCurrentStatus, setProjectCurrentStatus] = useState("");
     const [statusChanged, setStatusChanged] = useState();
 
+    const navigate = useNavigate();
+    const { id } = useParams();
+
     useEffect(() => {
-        setProjectCurrentStatus("new")
+        if (id) {
+            /*ProjectService.findById(id).then((response) => {
+                setProjectLocation(response.data.setProjectLocation)
+                setProjectDescription(response.data.projectDescription)
+                setCustomerData(response.data.customerData)
+                setWorkDuration(response.data.workDuration)
+                setWorkCost(response.data.workCost)
+                setProjectCurrentStatus(response.data.projectStatus.projectCurrentStatus)
+                setStatusChanged(response.data.projectStatus.statusChanged)
 
+            },
+            (error) => {
 
+            }
+            )*/
+
+            //Teszt
+            /*
+            console.log(id)
+            let project = ProjectService.findById(id)
+            setProjectLocation(project.projectLocation)
+            setProjectDescription(project.projectDescription)
+            setCustomerData(project.customerData)
+            setWorkDuration(project.workDuration)
+            setWorkCost(project.workCost)
+            setProjectCurrentStatus(project.projectStatus.projectCurrentStatus)
+            setStatusChanged(project.projectStatus.statusChanged)
+            */
+        }
     }, []);
 
+    //Új projekt létrehozása vagy meglévő módosítása
     const createOrModifyProject = (e) => {
         e.preventDefault();
+        const projectStatus = { projectCurrentStatus, statusChanged }
+        const project = { projectLocation, projectDescription, customerData, workDuration, workCost, projectStatus }
 
-        
+        //Projekt módosítása
+        if (id) {
+            ProjectService.modifyProject(id, project).then((response) => {
 
-        const projectStatus = {projectCurrentStatus, statusChanged}
-        const project = {projectLocation, projectDescription, customerData, workDuration, workCost, projectStatus}
-        
+            },
+                (error) => {
 
-        console.log(project)
+                }
+            )
 
-        
-        ProjectService.createProject(project).then((response) => {
-
-        },
-        (error) => {
-            console.log(error)
         }
-        )
+        //Új projekt létrehozása
+        else {
+            ProjectService.createProject(project).then((response) => {
 
+            },
+                (error) => {
+                    console.log(error)
+                }
+            )
+        }
+    }
 
+    //Cím bállítása
+    const getTitle = () => {
+        if (id) {
+            return <h3 className='text-center'>Projekt módosítása</h3>
+        }
+        else {
+            return <h3 className='text-center'>Új projekt hozzáadása</h3>
+        }
     }
 
 
@@ -49,7 +94,7 @@ const CreateOrModifyProjectComponent = () =>  {
             <div className='container m-3'>
                 <div className='container'>
                     <div className='card col-md-6 offset-md-3 offset-md-3'>
-                        <h2>Új projekt hozzáadása</h2>
+                        {getTitle()}
                         <div className='card-body'>
                             <form>
                                 <div className='form-group'>
@@ -112,7 +157,7 @@ const CreateOrModifyProjectComponent = () =>  {
                     </div>
                 </div>
             </div>
-            
+
         </div>
     );
 }

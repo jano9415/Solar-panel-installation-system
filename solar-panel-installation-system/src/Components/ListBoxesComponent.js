@@ -7,36 +7,43 @@ const ListBoxesComponent = () => {
 
 
     const [boxes, setBoxes] = useState([]);
-    const {id} = useParams();
-    const [part, setPart] = useState();
+    const { id } = useParams();
+    const [part, setPart] = useState({
+        id: 0, partName: "", price: 0, maxPieceInBox: 0, allAvailableNumber: 0,
+        allReservedNumber: 0, preReservedNumber: 0
+    });
     const [placedAmount, setPlacedAmount] = useState();
 
     useEffect(() => {
 
-        /*PartService.findById(id).then((response) => {
-            setPart(response.data);
-        },
-        (error) => {
-            console.log(error)
-        }
-        )*/
 
-        /*BoxService.findAll().then((response) => {
+        PartService.findById(id).then((response) => {
+
+            part.id = response.data.id
+            part.partName = response.data.partName
+            part.price = response.data.price
+            part.maxPieceInBox = response.data.maxPieceInBox
+            part.allAvailableNumber = response.data.allAvailableNumber
+            part.allReservedNumber = response.data.allReservedNumber
+            part.preReservedNumber = response.data.preReservedNumber
+        },
+            (error) => {
+                console.log(error)
+            }
+        )
+
+        BoxService.findByPartId(id).then((response) => {
             setBoxes(response.data);
         },
-        (error) => {
-            console.log(error)
-        })
+            (error) => {
+                console.log(error)
+            })
 
-        BoxService.findByPartId().then((response) => {
-            setBoxes(response.data);
-        },
-        (error) => {
-            console.log(error)
-        })*/
-
+        //Teszt
+        /*
         setPart(PartService.findById(id));
         setBoxes(BoxService.findByPartId);
+        */
 
 
 
@@ -44,24 +51,24 @@ const ListBoxesComponent = () => {
 
     const placePart = (e, box) => {
         e.preventDefault();
-        if(placedAmount <= (box.part.maxPieceInBox - box.numberOfProducts)){
-            if(box.part == null){
+        if (placedAmount <= (part.maxPieceInBox - box.numberOfProducts)) {
+            if (box.part != null) {
                 BoxService.placePartInBox(box.id, placedAmount).then((response) => {
                     window.location.reload();
 
                 },
-                (error) => {
-                    console.log(error)
-                }
+                    (error) => {
+                        console.log(error)
+                    }
                 )
             }
-            BoxService.placePartInEmptyBox(box.id, placedAmount, part).then((response) => {
+            BoxService.placePartInEmptyBox(box.id, placedAmount, part.id).then((response) => {
                 window.location.reload();
 
             },
-            (error) => {
-                console.log(error)
-            }
+                (error) => {
+                    console.log(error)
+                }
             )
         }
 
@@ -93,14 +100,22 @@ const ListBoxesComponent = () => {
                                 box =>
                                     <tr key={box.id}>
                                         <td>{box.id}</td>
-                                        <td>{box.part.partName}</td>
-                                        <td>{box.wareHouse.row}</td>
-                                        <td>{box.wareHouse.col}</td>
-                                        <td>{box.wareHouse.cell}</td>
+                                        {
+                                            box.part == null ? (
+                                                <td>Üres</td>
+                                            ) :
+                                            (
+                                                <td>{box.part.partName}</td>
+                                            )
+                                        }
+
+                                        <td>{box.location.row}</td>
+                                        <td>{box.location.col}</td>
+                                        <td>{box.location.cell}</td>
                                         <td>{box.numberOfProducts}</td>
                                         <td>
                                             <input type="number" placeholder='Darabszám' onChange={(e) => setPlacedAmount(e.target.value)} />
-                                            <button className='btn btn-info m-1' onClick={(e) => {placePart(e, box)}}>Elhelyez</button>
+                                            <button className='btn btn-info m-1' onClick={(e) => { placePart(e, box) }}>Elhelyez</button>
                                             {
                                                 box.numberOfProducts === 0 ? (
 

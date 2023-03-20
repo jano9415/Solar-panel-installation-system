@@ -31,13 +31,16 @@ const LoginComponent = () => {
         setMessage("");
         setLoading(true);
 
+        //Teszt adatok
+        /*
         AuthService.login(userName, password);
         setLoading(false);
         navigate("/");
         window.location.reload();
+        */
 
 
-        /*AuthService.login(userName, password).then(
+        AuthService.login(userName, password).then(
             () => {
                 navigate("/");
                 window.location.reload();
@@ -55,7 +58,7 @@ const LoginComponent = () => {
                 setMessage(resMessage + " Hibás felhasználói név vagy jelszó!");
             }
 
-        )*/
+        )
     }
 
 

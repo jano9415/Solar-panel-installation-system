@@ -15,6 +15,7 @@ const CreateuserComponent = () => {
     const createUser = (e) => {
         e.preventDefault();
         AuthService.createUser(userName,emailAddress,password).then((response) => {
+            console.log(response.data.message)
 
         },
         (error) => {

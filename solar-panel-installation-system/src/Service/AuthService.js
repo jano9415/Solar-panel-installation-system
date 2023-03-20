@@ -1,22 +1,22 @@
 import axios from "axios";
 
 
-const API_URL = "http://localhost:8080/api/auth";
+const API_URL = "http://localhost:8080/api/auth/";
 
 //Felhasználó létrehozása
-const createUser = (userName, emailAddress, password) => {
-    return axios.post(API_URL, {
-        userName,
-        emailAddress,
+const createUser = (username, email, password) => {
+    return axios.post(API_URL + "signup", {
+        username,
+        email,
         password
     });
 };
 
 //Bejelentkezés
-const login = (userName, password) => {
+const login = (username, password) => {
 
     //Teszt adatok
-    let expert = {
+    /*let expert = {
         userName: "bela",
         firstName: "László",
         lastName: "Nagy",
@@ -55,16 +55,16 @@ const login = (userName, password) => {
     }
     if(userName === "admin"){
         localStorage.setItem("user", JSON.stringify(admin));
-    }
+    }*/
 
-    /*return axios.post(API_URL, {
-        userName,
+    return axios.post(API_URL + "signin", {
+        username,
         password
     })
         .then((response) => {
-            localStorage.setItem("user", expert);
+            localStorage.setItem("user", JSON.stringify(response.data));
 
-        });*/
+        });
 };
 
 //Kijelentkezés

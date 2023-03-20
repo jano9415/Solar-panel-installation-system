@@ -7,6 +7,9 @@ const CreateOrModifyPartComponent = () => {
     const [partName, setPartName] = useState("");
     const [price, setPrice] = useState(0);
     const [maxPieceInBox, setMaxPieceInBox] = useState(0);
+    const [allAvailableNumber, setAllAvailableNumber] = useState(0);
+    const [allReservedNumber, setAllReservedNumber] = useState(0);
+    const [preReservedNumber, setPreReservedNumber] = useState(0);
 
     const navigate = useNavigate();
     const { id } = useParams();
@@ -14,7 +17,7 @@ const CreateOrModifyPartComponent = () => {
     //Új alkatrész hozzáadása vagy meglévő módosítása
     const createOrModifyPart = (e) => {
         e.preventDefault();
-        const part = {partName, price, maxPieceInBox}
+        const part = {partName, price, maxPieceInBox, allAvailableNumber, allReservedNumber, preReservedNumber}
 
         if(id){
             //Alkatrész módosítása
@@ -23,33 +26,43 @@ const CreateOrModifyPartComponent = () => {
         }
         else{
             //Új alkatrész hozzáadása
+
+            //Teszt
+            /*
             PartService.createPart(part)
             navigate("/listparts");
-            /*
+            */
+            
+            console.log(part)
+
             PartService.createPart(part).then(() => {
                 navigate("/listparts");
             },
             (error) => {
                 console.log(error)
-            })*/
+            })
         }
 
     }
 
     useEffect(() => {
         if(id){
-            /*PartService.findById(id).then((response) => {
+            PartService.findById(id).then((response) => {
                 setPartName(response.data.partName)
                 setPrice(response.data.price)
                 setMaxPieceInBox(response.data.maxPieceInBox)
             },
             (error) => {
                 console.log(error)
-            })*/
+            })
+
+            //Teszt
+            /*
             let part = PartService.findById(id);
             setPartName(part.partName)
             setPrice(part.price)
             setMaxPieceInBox(part.maxPieceInBox)
+            */
         }
 
     }, []);
