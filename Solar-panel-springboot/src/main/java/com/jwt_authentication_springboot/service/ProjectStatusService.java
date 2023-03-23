@@ -9,4 +9,7 @@ public interface ProjectStatusService {
     public void save(ProjectStatus projectStatus);
 
     public ResponseEntity<ProjectStatus> findById(long id);
+
+    //Keresés projekt változásának a dátuma szerint
+    ProjectStatus findByStatusChanged(String statusChanged);
 }

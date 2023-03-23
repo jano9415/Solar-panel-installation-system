@@ -13,4 +13,10 @@ public interface ProjectService {
     public ResponseEntity<Project> findById(long id);
 
     List<Project> findAll();
+
+    void update(Long id, Project project);
+
+    void reservePart(Long projectId, Long partId, int reservedNumber);
+
+    void preReservePart(Long projectId, Long partId, int preReservedNumber);
 }

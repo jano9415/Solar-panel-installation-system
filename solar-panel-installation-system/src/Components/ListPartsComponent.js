@@ -10,10 +10,11 @@ const ListPartsComponent = () => {
     useEffect(() => {
         PartService.getParts().then((response) => {
             setParts(response.data);
+            console.log(response.data)
         },
-        (error) => {
-            console.log(error)
-        })
+            (error) => {
+                console.log(error)
+            })
 
         //Teszt
         /*
@@ -40,8 +41,10 @@ const ListPartsComponent = () => {
                             <th>Név</th>
                             <th>Ár</th>
                             <th>Maximum darabszám egy dobozban</th>
-                            <th>Összesen elérhető mennyiség</th>
+                            <th>Raktárkészlet</th>
                             <th>Lefoglalt mennyiség</th>
+                            <th>Előfoglalt mennyiség</th>
+                            <th>Elérhető darabszám</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -56,6 +59,10 @@ const ListPartsComponent = () => {
                                         <td>{part.maxPieceInBox}</td>
                                         <td>{part.allAvailableNumber}</td>
                                         <td>{part.allReservedNumber}</td>
+                                        <td>{part.preReservedNumber}</td>
+                                        <td>
+                                            {part.allAvailableNumber - part.allReservedNumber}
+                                        </td>
                                         {AuthService.getCurrentUser().roles == "storeleader" && (
                                             <td>
                                                 <Link to={`/createpart/${part.id}`} className='btn btn-info m-1'>Módosítás</Link>

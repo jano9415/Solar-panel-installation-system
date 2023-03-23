@@ -17,20 +17,20 @@ const CreateOrModifyProjectComponent = () => {
 
     useEffect(() => {
         if (id) {
-            /*ProjectService.findById(id).then((response) => {
-                setProjectLocation(response.data.setProjectLocation)
+            ProjectService.findById(id).then((response) => {
+                setProjectLocation(response.data.projectLocation)
                 setProjectDescription(response.data.projectDescription)
                 setCustomerData(response.data.customerData)
                 setWorkDuration(response.data.workDuration)
                 setWorkCost(response.data.workCost)
-                setProjectCurrentStatus(response.data.projectStatus.projectCurrentStatus)
-                setStatusChanged(response.data.projectStatus.statusChanged)
+                //setProjectCurrentStatus(response.data.projectStatus.projectCurrentStatus)
+                //setStatusChanged(response.data.projectStatus.statusChanged)
 
             },
             (error) => {
 
             }
-            )*/
+            )
 
             //Teszt
             /*
@@ -51,11 +51,13 @@ const CreateOrModifyProjectComponent = () => {
     const createOrModifyProject = (e) => {
         e.preventDefault();
         const projectStatus = { projectCurrentStatus, statusChanged }
-        const project = { projectLocation, projectDescription, customerData, workDuration, workCost, projectStatus }
+        //const project = { projectLocation, projectDescription, customerData, workDuration, workCost, projectStatus }
+        const project = { projectLocation, projectDescription, customerData, workDuration, workCost }
 
         //Projekt módosítása
         if (id) {
             ProjectService.modifyProject(id, project).then((response) => {
+                navigate("/listprojects")
 
             },
                 (error) => {
@@ -67,6 +69,7 @@ const CreateOrModifyProjectComponent = () => {
         //Új projekt létrehozása
         else {
             ProjectService.createProject(project).then((response) => {
+                navigate("/listprojects")
 
             },
                 (error) => {

@@ -63,36 +63,36 @@ const findAll = () => {
 //Új projekt létrehozása
 const createProject = (project) => {
 
-    return axios.post(API_URL, project)
+    return axios.post(API_URL + "createproject", project)
 }
 
 //Meglévő projekt módosítása
 //Alkatrész módosítása
 const modifyProject = (id, project) => {
 
-    return axios.post(API_URL + id, project);
+    return axios.put(API_URL + "update/" + id, project);
 
 };
 
 //Keresés id szerint
 const findById = (id) => {
     //Teszt
-    const searchIndex = projects.findIndex((project) => project.id == id);
-    return projects[searchIndex];
+    //const searchIndex = projects.findIndex((project) => project.id == id);
+    //return projects[searchIndex];
 
-    //return axios.get(API_URL + id);
+    return axios.get(API_URL + "findbyid/" + id);
 
 };
 
 //Alkatrész lefoglalása
 const reservePart = (projectId, partId, reservedNumber) => {
 
-    return axios.get(API_URL + projectId + partId, reservePart)
+    return axios.get(API_URL + "reservepart/" +  projectId + "/" + partId + "/" + reservedNumber)
 }
 
 //Előfoglalás leadása az alkatrészre
 const preReservePart = (projectId, partId, preReservedNumber) => {
-    return axios.get(API_URL + projectId + partId, preReservePart)
+    return axios.get(API_URL + "prereservepart/" + projectId + "/" +  partId + "/" + preReservedNumber)
 
 }
 

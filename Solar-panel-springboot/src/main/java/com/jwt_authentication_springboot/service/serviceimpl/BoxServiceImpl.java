@@ -1,6 +1,7 @@
 package com.jwt_authentication_springboot.service.serviceimpl;
 
 import com.jwt_authentication_springboot.model.Box;
+import com.jwt_authentication_springboot.model.Part;
 import com.jwt_authentication_springboot.repository.BoxRepository;
 import com.jwt_authentication_springboot.service.BoxService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,20 +67,25 @@ public class BoxServiceImpl implements BoxService {
     @Override
     public void placePartInEmptyBox(Long boxId, int placedAmount, Long partId) {
         Box actualBox = boxRepository.findById(boxId).get();
+        Part part = partService.findById(partId).getBody();
+
 
         actualBox.setNumberOfProducts(actualBox.getNumberOfProducts() + placedAmount);
-        actualBox.setPart(partService.findById(partId).getBody());
+        part.setAllAvailableNumber(part.getAllAvailableNumber() + placedAmount);
+        actualBox.setPart(part);
         boxRepository.save(actualBox);
     }
 
     //Alkatrész elhelyezése nem üres rekeszben
-    //Átadom neki az alkatrész mennyiségét
+    //A rekeszben már van ilyen típusú alkatrész, ezért csak a mennyiséget adom át
     @Override
     public void placePartInBox(Long boxId, int placedAmount) {
 
         Box actualBox = boxRepository.findById(boxId).get();
+        Part part = actualBox.getPart();
 
         actualBox.setNumberOfProducts(actualBox.getNumberOfProducts() + placedAmount);
+        part.setAllAvailableNumber(part.getAllAvailableNumber() + placedAmount);
         boxRepository.save(actualBox);
 
     }

@@ -10,6 +10,7 @@ const ListProjectsComponent = () => {
 
         ProjectService.findAll().then((response) => {
             setProjects(response.data)
+            console.log(response.data)
         },
         (error) => {
             console.log(error)
@@ -36,7 +37,6 @@ const ListProjectsComponent = () => {
                             <th>Időtartam</th>
                             <th>Költség</th>
                             <th>Státusz</th>
-                            <th>Státusz változás</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -52,8 +52,7 @@ const ListProjectsComponent = () => {
                                         <td>{project.customerData}</td>
                                         <td>{project.workDuration}</td>
                                         <td>{project.workCost}</td>
-                                        <td>{project.projectStatus.projectCurrentStatus}</td>
-                                        <td>{project.projectStatus.statusChanged}</td>
+                                        <td>{project.projectStatuses[0].projectCurrentStatus}</td>
                                         <td>
                                             <Link to={`/createproject/${project.id}`} className='btn btn-info m-1'>Módosítás</Link>
                                         </td>

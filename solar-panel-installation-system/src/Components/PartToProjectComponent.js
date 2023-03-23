@@ -13,35 +13,54 @@ const PartToProjectComponent = () => {
     const { id } = useParams();
 
     useEffect(() => {
-        /*PartService.getParts().then((response) => {
+        PartService.getParts().then((response) => {
             setParts(response.data);
         },
         (error) => {
             console.log(error)
-        })*/
+        })
 
-        /*ProjectService.findById(id).then((response) => {
+        ProjectService.findById(id).then((response) => {
             setProject(response.data)
         },
         (error) => {
             console.log(error)
-        })*/
+        })
 
+        //Teszt
+        /*
         setParts(PartService.getParts)
         setProject(ProjectService.findById(id))
         console.log(project)
+        */
 
     }, [])
 
     //Alkatrész lefoglalása
-    const reservePart = (e) => {
+    const reservePart = (e, partId) => {
         e.preventDefault();
+
+        ProjectService.reservePart(id, partId, reservedNumber).then((response) => {
+            window.location.reload();
+
+        },
+        (error) => {
+            console.log(error)
+        })
 
     }
 
     //Előfoglalás leadása az alkatrészre
-    const preReservePart = (e) => {
+    const preReservePart = (e, partId) => {
         e.preventDefault();
+
+        ProjectService.preReservePart(id, partId, reservedNumber).then((response) => {
+            window.location.reload();
+
+        },
+        (error) => {
+            console.log(error)
+        })
 
     }
 
@@ -86,7 +105,7 @@ const PartToProjectComponent = () => {
                                             {
                                                 part.allAvailableNumber - part.allReservedNumber > 0 && (
                                                     <button to={`/createpart/${part.id}`} className='btn btn-info m-1'
-                                                        onClick={(e) => { reservePart(e) }}
+                                                        onClick={(e) => { reservePart(e, part.id) }}
                                                     >
                                                         Lefoglal
                                                     </button>
@@ -94,8 +113,8 @@ const PartToProjectComponent = () => {
                                             }
                                             {
                                                 part.allAvailableNumber - part.allReservedNumber <= 0 && (
-                                                    <button to={`/listboxes/${part.id}`} className='btn btn-info m-1'
-                                                        onClick={(e) => { preReservePart(e) }}
+                                                    <button to={`/listboxes/${part.id}`} className='btn btn-danger m-1'
+                                                        onClick={(e) => { preReservePart(e, part.id) }}
                                                     >
                                                         Előfoglalás
                                                     </button>

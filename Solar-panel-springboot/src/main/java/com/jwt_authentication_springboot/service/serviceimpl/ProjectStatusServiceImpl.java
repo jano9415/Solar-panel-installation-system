@@ -23,4 +23,10 @@ public class ProjectStatusServiceImpl implements ProjectStatusService {
     public ResponseEntity<ProjectStatus> findById(long id) {
         return ResponseEntity.ok(projectStatusRepository.findById(id).get());
     }
+
+    //Keresés projekt változásának a dátuma szerint
+    @Override
+    public ProjectStatus findByStatusChanged(String statusChanged) {
+        return projectStatusRepository.findByStatusChanged(statusChanged);
+    }
 }

@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProjectStatusRepository extends CrudRepository<ProjectStatus, Long> {
 
+    ProjectStatus findByStatusChanged(String statusChanged);
+
 }
