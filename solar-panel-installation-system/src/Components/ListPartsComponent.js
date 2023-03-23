@@ -66,7 +66,7 @@ const ListPartsComponent = () => {
                                         {AuthService.getCurrentUser().roles == "storeleader" && (
                                             <td>
                                                 <Link to={`/createpart/${part.id}`} className='btn btn-info m-1'>Módosítás</Link>
-                                                <Link to={`/listboxes/${part.id}`} className='btn btn-info m-1'>Bevételezés</Link>
+                                                <Link to={`/listboxes/${part.id}`} className='btn btn-primary m-1'>Bevételezés</Link>
                                             </td>
                                         )}
                                     </tr>

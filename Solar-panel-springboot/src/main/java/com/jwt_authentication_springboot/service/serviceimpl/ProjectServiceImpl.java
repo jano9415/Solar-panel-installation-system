@@ -77,7 +77,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     //Alkatrész lefoglalása
-    //Beszúrom a kapcsolótáblába a projektet, az alkatrészt és hogy hány darab alkatrészről van lefoglalva
+    //Beszúrom a kapcsolótáblába a projektet, az alkatrészt és a lefoglalt mennyiséget
     //Frissítem az adott alkatrész lefoglalt darabszámát
     //Megnézem, hogy az adott projektnek van-e már olyan státusza, hogy "draft"
     //Ha nincs, akkor létrehozok egyet
@@ -86,14 +86,34 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(projectId).get();
         Part part = partService.findById(partId).getBody();
 
-        ProjectPart projectPart = new ProjectPart();
+        ProjectPart projectPart = projectPartService.findByProjectIdAndPartId(projectId, partId);
+
+        if(projectPart == null){
+
+            projectPart = new ProjectPart();
+            projectPart.setProject(project);
+            projectPart.setPart(part);
+            projectPart.setNumberOfParts(reservedNumber);
+            projectPartService.save(projectPart);
+
+
+        }
+        else{
+            projectPart.setNumberOfParts(projectPart.getNumberOfParts() + reservedNumber);
+            projectPartService.save(projectPart);
+        }
+
+        part.setAllReservedNumber(part.getAllReservedNumber() + reservedNumber);
+        partService.save(part);
+
+        /*ProjectPart projectPart = new ProjectPart();
         projectPart.setProject(project);
         projectPart.setPart(part);
         projectPart.setNumberOfParts(reservedNumber);
         projectPartService.save(projectPart);
 
         part.setAllReservedNumber(part.getAllReservedNumber() + reservedNumber);
-        partService.save(part);
+        partService.save(part);*/
 
         boolean insertNewProjectStatus = true;
 
@@ -125,13 +145,46 @@ public class ProjectServiceImpl implements ProjectService {
 
     }
 
+    //Előfoglalás alkatrészre
+    //Beszúrom a kapcsolótáblába a projektet, az alkatrészt és az előfoglalt mennyiséget
+    //Frissítem az adott alkatrész előfoglalt darabszámát
+    //Megnézem, hogy az adott projektnek van-e már olyan státusza, hogy "draft"
+    //Ha nincs, akkor létrehozok egyet
     @Override
     public void preReservePart(Long projectId, Long partId, int preReservedNumber) {
         Project project = projectRepository.findById(projectId).get();
         Part part = partService.findById(partId).getBody();
 
+        ProjectPart projectPart = projectPartService.findByProjectIdAndPartId(projectId, partId);
+
+        if(projectPart == null){
+
+            projectPart = new ProjectPart();
+            projectPart.setProject(project);
+            projectPart.setPart(part);
+            projectPart.setPreReservedNumber(preReservedNumber);
+            projectPartService.save(projectPart);
+
+
+        }
+        else{
+            projectPart.setPreReservedNumber(projectPart.getPreReservedNumber() + preReservedNumber);
+            projectPartService.save(projectPart);
+        }
+
         part.setPreReservedNumber(part.getPreReservedNumber() + preReservedNumber);
         partService.save(part);
+
+
+
+        /*ProjectPart projectPart = new ProjectPart();
+        projectPart.setProject(project);
+        projectPart.setPart(part);
+        projectPart.setPreReservedNumber(preReservedNumber);
+        projectPartService.save(projectPart);
+
+        part.setPreReservedNumber(part.getPreReservedNumber() + preReservedNumber);
+        partService.save(part);*/
 
 
     }

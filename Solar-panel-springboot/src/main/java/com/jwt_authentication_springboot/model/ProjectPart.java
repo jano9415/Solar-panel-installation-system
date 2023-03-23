@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@JsonIgnoreProperties({"project" , "part"})
+@JsonIgnoreProperties({"project" , "part"})
 public class ProjectPart implements Serializable {
 
     @Id
@@ -33,4 +33,6 @@ public class ProjectPart implements Serializable {
     private Part part;
 
     private int numberOfParts;
+
+    private int preReservedNumber;
 }

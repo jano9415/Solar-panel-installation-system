@@ -16,16 +16,16 @@ const PartToProjectComponent = () => {
         PartService.getParts().then((response) => {
             setParts(response.data);
         },
-        (error) => {
-            console.log(error)
-        })
+            (error) => {
+                console.log(error)
+            })
 
         ProjectService.findById(id).then((response) => {
             setProject(response.data)
         },
-        (error) => {
-            console.log(error)
-        })
+            (error) => {
+                console.log(error)
+            })
 
         //Teszt
         /*
@@ -37,16 +37,27 @@ const PartToProjectComponent = () => {
     }, [])
 
     //Alkatrész lefoglalása
-    const reservePart = (e, partId) => {
+    const reservePart = (e, partId, allAvailableNumber, allReservedNumber) => {
         e.preventDefault();
 
-        ProjectService.reservePart(id, partId, reservedNumber).then((response) => {
-            window.location.reload();
 
-        },
-        (error) => {
-            console.log(error)
-        })
+
+        if ((allAvailableNumber - allReservedNumber) < reservedNumber) {
+            alert("Ennyi alkatrészt nem tudsz lefoglalni!")
+
+
+        }
+        else {
+            ProjectService.reservePart(id, partId, reservedNumber).then((response) => {
+                window.location.reload();
+
+            },
+                (error) => {
+                    console.log(error)
+                })
+        }
+
+
 
     }
 
@@ -58,9 +69,9 @@ const PartToProjectComponent = () => {
             window.location.reload();
 
         },
-        (error) => {
-            console.log(error)
-        })
+            (error) => {
+                console.log(error)
+            })
 
     }
 
@@ -98,14 +109,14 @@ const PartToProjectComponent = () => {
                                             {part.allAvailableNumber - part.allReservedNumber}
                                         </td>
                                         <td>
-                                            <input type="number" placeholder='Darabszám'
+                                            <input type="number" placeholder='Darabszám' className='form-control'
                                                 onChange={(e) => setReservedNumber(e.target.value)}
                                             />
                                             <br />
                                             {
                                                 part.allAvailableNumber - part.allReservedNumber > 0 && (
                                                     <button to={`/createpart/${part.id}`} className='btn btn-info m-1'
-                                                        onClick={(e) => { reservePart(e, part.id) }}
+                                                        onClick={(e) => { reservePart(e, part.id, part.allAvailableNumber, part.allReservedNumber) }}
                                                     >
                                                         Lefoglal
                                                     </button>

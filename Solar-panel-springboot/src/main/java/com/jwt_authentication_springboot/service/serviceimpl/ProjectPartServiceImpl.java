@@ -33,5 +33,10 @@ public class ProjectPartServiceImpl implements ProjectPartService {
     public ProjectPart findById(Long id) {
         return projectPartRepository.findById(id).get();
     }
+
+    @Override
+    public ProjectPart findByProjectIdAndPartId(Long projectId, Long partId) {
+        return projectPartRepository.findByProjectIdAndPartId(projectId, partId);
+    }
 }
 

@@ -71,6 +71,9 @@ const ListBoxesComponent = () => {
                 }
             )
         }
+        else {
+            alert("Ennyi alkatrész nem fér el a rekeszben!")
+        }
 
 
     }
@@ -104,9 +107,9 @@ const ListBoxesComponent = () => {
                                             box.part == null ? (
                                                 <td>Üres</td>
                                             ) :
-                                            (
-                                                <td>{box.part.partName}</td>
-                                            )
+                                                (
+                                                    <td>{box.part.partName}</td>
+                                                )
                                         }
 
                                         <td>{box.location.row}</td>
@@ -114,7 +117,9 @@ const ListBoxesComponent = () => {
                                         <td>{box.location.cell}</td>
                                         <td>{box.numberOfProducts}</td>
                                         <td>
-                                            <input type="number" placeholder='Darabszám' onChange={(e) => setPlacedAmount(e.target.value)} />
+                                            <input type="number" placeholder='Darabszám' onChange={(e) => setPlacedAmount(e.target.value)}
+                                                className='form-control'
+                                            />
                                             <button className='btn btn-info m-1' onClick={(e) => { placePart(e, box) }}>Elhelyez</button>
                                             {
                                                 box.numberOfProducts === 0 ? (
@@ -123,7 +128,7 @@ const ListBoxesComponent = () => {
 
                                                 ) :
                                                     (
-                                                        <p>Még {box.part.maxPieceInBox - box.numberOfProducts} darab alkatrész fér el.</p>
+                                                        <p>Még {part.maxPieceInBox - box.numberOfProducts} darab alkatrész fér el.</p>
                                                     )
                                             }
                                         </td>

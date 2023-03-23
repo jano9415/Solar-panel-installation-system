@@ -11,4 +11,6 @@ public interface ProjectPartRepository extends CrudRepository<ProjectPart, Long>
 
     @Override
     List<ProjectPart> findAll();
+
+    ProjectPart findByProjectIdAndPartId(Long projectId, Long partId);
 }

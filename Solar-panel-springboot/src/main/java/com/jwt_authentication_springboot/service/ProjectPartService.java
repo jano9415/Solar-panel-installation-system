@@ -11,4 +11,6 @@ public interface ProjectPartService {
     List<ProjectPart> findAll();
 
     ProjectPart findById(Long id);
+
+    ProjectPart findByProjectIdAndPartId(Long projectId, Long partId);
 }
