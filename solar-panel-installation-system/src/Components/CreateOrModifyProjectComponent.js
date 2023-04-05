@@ -141,10 +141,10 @@ const CreateOrModifyProjectComponent = () => {
                                         onChange={(e) => setWorkDuration(e.target.value)} />
                                 </div>
                                 <div className='form-group'>
-                                    <label className='form-label'>Költség</label>
+                                    <label className='form-label'>Munkadíj</label>
                                     <input
                                         type="number"
-                                        placeholder='Költség'
+                                        placeholder='Munkadíj'
                                         name='workDuration'
                                         className='form-control'
                                         value={workCost}

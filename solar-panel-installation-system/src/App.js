@@ -11,6 +11,10 @@ import ListBoxesComponent from './Components/ListBoxesComponent';
 import ListProjectsComponent from './Components/ListProjectsComponent';
 import CreateOrModifyProjectComponent from './Components/CreateOrModifyProjectComponent';
 import PartToProjectComponent from './Components/PartToProjectComponent';
+import ListLackOfPartsComponent from './Components/ListLackOfPartsComponent';
+import ListReadyProjectsComponent from './Components/ListReadyProjectsComponent';
+import ShowPartsOfProjectComponent from './Components/ShowPartsOfProjectComponent';
+
 
 function App() {
 
@@ -60,6 +64,13 @@ function App() {
                 </Link>
               </li>
             )}
+            {currentUser && currentUser.roles.includes("storeleader") && (
+              <li>
+                <Link to={"/listlackofparts"} className='nav-link'>
+                  <span>Hiányzó alkatrészek</span>
+                </Link>
+              </li>
+            )}
             {currentUser && currentUser.roles.includes("expert") && (
               <li>
                 <Link to={"/listparts"} className='nav-link'>
@@ -70,6 +81,13 @@ function App() {
             {currentUser && currentUser.roles.includes("expert") && (
               <li>
                 <Link to={"/listprojects"} className='nav-link'>
+                  <span>Projektek</span>
+                </Link>
+              </li>
+            )}
+            {currentUser && currentUser.roles.includes("storeemployee") && (
+              <li>
+                <Link to={"/listprojectswithoutprereservation"} className='nav-link'>
                   <span>Projektek</span>
                 </Link>
               </li>
@@ -114,7 +132,10 @@ function App() {
             <Route path='/listprojects' element={<ListProjectsComponent />} />
             <Route path='/createproject' element={<CreateOrModifyProjectComponent />} />
             <Route path='/createproject/:id' element={<CreateOrModifyProjectComponent />} />
-            <Route path='/parttoproject/:id' element={ <PartToProjectComponent />} />
+            <Route path='/parttoproject/:id' element={<PartToProjectComponent />} />
+            <Route path='/listlackofparts' element={<ListLackOfPartsComponent />} />
+            <Route path='/listprojectswithoutprereservation' element={<ListReadyProjectsComponent />} />
+            <Route path='/showpartsofproject/:id' element={<ShowPartsOfProjectComponent />} />
           </Routes>
         </div>
 

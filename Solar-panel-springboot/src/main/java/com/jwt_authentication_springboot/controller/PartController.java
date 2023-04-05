@@ -53,5 +53,19 @@ public class PartController {
         partService.update(id, part);
     }
 
+    //Hiányzó alkatrészek lekérése
+    @GetMapping("/findlackofparts")
+    public List<Part> findLackOfParts(){
+        return partService.findLackOfParts();
+
+    }
+
+    //Hiányzó és előfoglalt alkatrészek lekérése
+    @GetMapping("/findlackofpartswithprereservation")
+    public List<Part> findLackOfPartsWithPreReservation(){
+        return partService.findLackOfPartsWithPreReservation();
+
+    }
+
 
 }

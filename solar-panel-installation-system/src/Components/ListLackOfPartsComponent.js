@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import AuthService from '../Service/AuthService';
+import { Link } from 'react-router-dom';
 import PartService from '../Service/PartService';
 
-const ListPartsComponent = () => {
+const ListLackOfPartsComponent = () => {
 
     const [parts, setParts] = useState([]);
 
     useEffect(() => {
-        PartService.getParts().then((response) => {
+
+
+    }, [])
+
+    const listLackOfParts = () => {
+
+        PartService.findLackOfParts().then((response) => {
             setParts(response.data);
             console.log(response.data)
         },
@@ -16,26 +22,28 @@ const ListPartsComponent = () => {
                 console.log(error)
             })
 
-        //Teszt
-        /*
-        setParts(PartService.getParts)
-        console.log(AuthService.getCurrentUser().roles)
-        */
+    }
 
-    }, [])
+    const listLackOfPartsWithPreReservation = () => {
+        PartService.findLackOfPartsWithPreReservation().then((response) => {
+            setParts(response.data);
+            console.log(response.data)
+        },
+            (error) => {
+                console.log(error)
+            })
 
 
-
+    }
 
 
     return (
         <div>
-            <h2 className='text-center'>Alkatrészek</h2>
-            {AuthService.getCurrentUser().roles == 'storeleader' && (
-                <Link to="/createpart" className='btn btn-primary mb-2'>Új alkatrész hozzáadása</Link>
-            )}
+            <h2 className='text-center'>Hiányzó alkatrészek</h2>
+            <Link className='btn btn-primary m-1' onClick={listLackOfParts}>Hiányzó alkatrészek</Link>
+            <Link className='btn btn-primary m-1' onClick={listLackOfPartsWithPreReservation}>Hiányzó és előfoglalt alkatrészek</Link>
             <div className='row' >
-                <table className='table table-striped table-bordered' >
+                <table className='table table-striped table-bordered text-center' >
                     <thead>
                         <tr>
                             <th>Név</th>
@@ -43,9 +51,8 @@ const ListPartsComponent = () => {
                             <th>Maximum darabszám egy dobozban</th>
                             <th>Raktárkészlet</th>
                             <th>Lefoglalt mennyiség</th>
-                            <th>Előfoglalt mennyiség</th>
-                            <th>Elérhető darabszám</th>
-                            <th></th>
+                            <th className='bg-danger'>Előfoglalt mennyiség</th>
+                            <th className='bg-warning'>Elérhető darabszám</th>
                         </tr>
                     </thead>
 
@@ -59,24 +66,19 @@ const ListPartsComponent = () => {
                                         <td>{part.maxPieceInBox}</td>
                                         <td>{part.allAvailableNumber}</td>
                                         <td>{part.allReservedNumber}</td>
-                                        <td>{part.preReservedNumber}</td>
-                                        <td>
+                                        <td className="table-danger">{part.preReservedNumber}</td>
+                                        <td className="table-warning">
                                             {part.allAvailableNumber - part.allReservedNumber}
                                         </td>
-                                        {AuthService.getCurrentUser().roles == "storeleader" && (
-                                            <td>
-                                                <Link to={`/createpart/${part.id}`} className='btn btn-info m-1'>Módosítás</Link>
-                                                <Link to={`/listboxes/${part.id}`} className='btn btn-primary m-1'>Bevételezés</Link>
-                                            </td>
-                                        )}
                                     </tr>
                             )
                         }
                     </tbody>
                 </table>
             </div>
+
         </div>
     );
 }
 
-export default ListPartsComponent;
+export default ListLackOfPartsComponent;

@@ -96,12 +96,24 @@ const getParts = () => {
     return axios.get(API_URL + "findall");
 }
 
+//Hiányzó alkatrészek lekérése
+const findLackOfParts = () => {
+    return axios.get(API_URL + "findlackofparts")
+}
+
+//Hiányzó és előfoglalt alkatrészek lekérése
+const findLackOfPartsWithPreReservation = () => {
+    return axios.get(API_URL + "findlackofpartswithprereservation")
+}
+
 
 const PartService = {
     createPart,
     getParts,
     modifyPart,
-    findById
+    findById,
+    findLackOfParts,
+    findLackOfPartsWithPreReservation
 
 };
 

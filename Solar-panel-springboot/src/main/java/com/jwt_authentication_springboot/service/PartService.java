@@ -15,4 +15,10 @@ public interface PartService {
     public ResponseEntity<Part> findById(long id);
 
     void update(Long id, Part part);
+
+    //Hiányzó alkatrészek lekérése
+    List<Part> findLackOfParts();
+
+    //Hiányzó és előfoglalt alkatrészek lekérése
+    List<Part> findLackOfPartsWithPreReservation();
 }

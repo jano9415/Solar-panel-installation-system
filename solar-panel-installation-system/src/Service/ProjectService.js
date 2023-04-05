@@ -96,13 +96,39 @@ const preReservePart = (projectId, partId, preReservedNumber) => {
 
 }
 
+//Árkalkuláció elkészítése. Ha minden alkatrész elérhető a raktárban, visszatér a költséggel és a project "scheduled" fázisba kerül.
+//Ha nem érhető el minden alkatrész, akkor a költség 0 és a project "wait" fázisba kerül
+const showFullCost = (projectId) => {
+    return axios.get(API_URL + "showfullcost/" + projectId)
+}
+
+//Projekt lezárása.
+//Ha sikeres akkor "completed" fázsiba kerül. Ha nem, akkor "failed" fázisba.
+const finishProject = (projectId) => {
+    return axios.get(API_URL + "finishproject/" + projectId)
+}
+
+//Projektek listázása kivételezésre
+const listProjectsWithoutPreReservation = () => {
+    return axios.get(API_URL + "listprojectswithoutprereservation")
+}
+
+//A kiválasztott projekthez tartozó lefoglalt alkatrészek listázása
+const showPartsOfProject = (projectId) => {
+    return axios.get(API_URL + "showpartsofproject/" + projectId)
+}
+
 const ProjectService = {
     findAll,
     createProject,
     modifyProject,
     findById,
     reservePart,
-    preReservePart
+    preReservePart,
+    showFullCost,
+    finishProject,
+    listProjectsWithoutPreReservation,
+    showPartsOfProject
 
 };
 

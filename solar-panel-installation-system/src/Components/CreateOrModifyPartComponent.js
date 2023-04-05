@@ -23,6 +23,7 @@ const CreateOrModifyPartComponent = () => {
             //Alkatrész módosítása
             PartService.modifyPart(id,part)
             navigate("/listparts");
+            window.location.reload();
         }
         else{
             //Új alkatrész hozzáadása

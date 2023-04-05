@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -48,5 +49,32 @@ public class PartServiceImpl implements PartService {
 
 
 
+    }
+
+    //Hiányzó alkatrészek lekérése
+    @Override
+    public List<Part> findLackOfParts() {
+
+        List<Part> parts = new ArrayList<Part>();
+
+        for(Part p : findAll()){
+            if( (p.getAllAvailableNumber() - p.getAllReservedNumber()) == 0 && p.getPreReservedNumber() == 0 ){
+                parts.add(p);
+            }
+        }
+        return parts;
+    }
+
+    //Hiányzó és előfoglalt alkatrészek lekérése
+    @Override
+    public List<Part> findLackOfPartsWithPreReservation() {
+        List<Part> parts = new ArrayList<Part>();
+
+        for(Part p : findAll()){
+            if(p.getPreReservedNumber() > 0 ){
+                parts.add(p);
+            }
+        }
+        return parts;
     }
 }

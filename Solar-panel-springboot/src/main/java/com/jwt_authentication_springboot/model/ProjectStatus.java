@@ -29,7 +29,8 @@ public class ProjectStatus {
     @ManyToOne()
     @JoinTable(
             name = "project_projectstatus",
-            joinColumns = {@JoinColumn(name = "project_id")},
-            inverseJoinColumns = {@JoinColumn(name = "projectstatus_id")})
+            joinColumns = {@JoinColumn(name = "projectstatus_id")},
+            inverseJoinColumns = {@JoinColumn(name = "project_id")})
     private Project project;
+
 }
