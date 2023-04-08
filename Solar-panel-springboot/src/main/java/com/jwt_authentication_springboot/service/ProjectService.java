@@ -3,6 +3,7 @@ package com.jwt_authentication_springboot.service;
 import com.jwt_authentication_springboot.model.Box;
 import com.jwt_authentication_springboot.model.Part;
 import com.jwt_authentication_springboot.model.Project;
+import com.jwt_authentication_springboot.payload.response.PartDTO;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -34,5 +35,5 @@ public interface ProjectService {
 
     //A kiválasztott projekthez tartozó lefoglalt alkatrészek listázása
     //Ezeket az alkatrészeket már ki lehet venni a raktárból
-    List<Part> showPartsOfProject(Long projectId);
+    List<PartDTO> showPartsOfProject(Long projectId);
 }

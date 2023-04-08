@@ -13,4 +13,6 @@ public interface ProjectPartService {
     ProjectPart findById(Long id);
 
     ProjectPart findByProjectIdAndPartId(Long projectId, Long partId);
+
+    void deleteProjectPart(Long projectPartId);
 }

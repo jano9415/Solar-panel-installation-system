@@ -38,5 +38,10 @@ public class ProjectPartServiceImpl implements ProjectPartService {
     public ProjectPart findByProjectIdAndPartId(Long projectId, Long partId) {
         return projectPartRepository.findByProjectIdAndPartId(projectId, partId);
     }
+
+    @Override
+    public void deleteProjectPart(Long projectPartId) {
+        projectPartRepository.deleteById(projectPartId);
+    }
 }
 

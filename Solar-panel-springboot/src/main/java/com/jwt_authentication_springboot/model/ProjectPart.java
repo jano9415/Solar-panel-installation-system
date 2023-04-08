@@ -22,7 +22,7 @@ public class ProjectPart implements Serializable {
 
     @Id
     @GeneratedValue
-    private int id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "project_id")

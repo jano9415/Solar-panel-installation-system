@@ -2,6 +2,7 @@ package com.jwt_authentication_springboot.controller;
 
 import com.jwt_authentication_springboot.model.Part;
 import com.jwt_authentication_springboot.model.Project;
+import com.jwt_authentication_springboot.payload.response.PartDTO;
 import com.jwt_authentication_springboot.service.serviceimpl.ProjectPartServiceImpl;
 import com.jwt_authentication_springboot.service.serviceimpl.ProjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +77,7 @@ public class ProjectController {
     //A kiválasztott projekthez tartozó lefoglalt alkatrészek listázása
     //Ezeket az alkatrészeket már ki lehet venni a raktárból
     @GetMapping("/showpartsofproject/{projectId}")
-    public List<Part> showPartsOfProject(@PathVariable Long projectId){
+    public List<PartDTO> showPartsOfProject(@PathVariable Long projectId){
         return projectService.showPartsOfProject(projectId);
     }
 

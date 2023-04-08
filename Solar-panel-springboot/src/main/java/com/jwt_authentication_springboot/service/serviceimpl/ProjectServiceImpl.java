@@ -4,8 +4,11 @@ import com.jwt_authentication_springboot.model.Part;
 import com.jwt_authentication_springboot.model.Project;
 import com.jwt_authentication_springboot.model.ProjectPart;
 import com.jwt_authentication_springboot.model.ProjectStatus;
+import com.jwt_authentication_springboot.payload.response.PartDTO;
 import com.jwt_authentication_springboot.repository.ProjectRepository;
 import com.jwt_authentication_springboot.service.ProjectService;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -29,6 +34,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     ProjectPartServiceImpl projectPartService;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
 
     //Projekt mentése
@@ -300,7 +308,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         for(Project p : findAll()){
             for(ProjectPart projectPart : p.getProjectParts()){
-                if(projectPart.getPreReservedNumber() == 0){
+                if(projectPart.getPreReservedNumber() == 0 && !projects.contains(p)){
                     System.out.println("Projekt hozzáadva");
                     projects.add(p);
                 }
@@ -323,13 +331,47 @@ public class ProjectServiceImpl implements ProjectService {
     //A kiválasztott projekthez tartozó lefoglalt alkatrészek listázása
     //Ezeket az alkatrészeket már ki lehet venni a raktárból
     @Override
-    public List<Part> showPartsOfProject(Long projectId) {
+    public List<PartDTO> showPartsOfProject(Long projectId) {
         List<Part> parts = new ArrayList<Part>();
+        List<PartDTO> partsDTOs = new ArrayList<PartDTO>();
+
 
         for(ProjectPart projectPart : findById(projectId).getBody().getProjectParts()){
-            parts.add(projectPart.getPart());
+            //parts.add(projectPart.getPart());
+            PartDTO partDTO = new PartDTO();
+
+            partDTO.setId(projectPart.getPart().getId());
+            partDTO.setPartName(projectPart.getPart().getPartName());
+            partDTO.setPrice(projectPart.getPart().getPrice());
+            partDTO.setMaxPieceInBox(projectPart.getPart().getMaxPieceInBox());
+            partDTO.setAllAvailableNumber(projectPart.getPart().getAllAvailableNumber());
+            partDTO.setAllReservedNumber(projectPart.getPart().getAllReservedNumber());
+            partDTO.setPreReservedNumber(projectPart.getPart().getPreReservedNumber());
+            partDTO.setNumberOfParts(projectPart.getNumberOfParts());
+
+            partsDTOs.add(partDTO);
 
         }
-        return parts;
+
+
+        return partsDTOs;
+
+
+        //Alkatrész lista konvertálása alkatrész DTO listába
+        /*return parts.stream()
+                .map(this::convertEntityToDto)
+                .collect(Collectors.toList());*/
+
+
+
+    }
+
+    //Alkatrész entity objektum konvertálása alkatrész DTO objektummá
+    private PartDTO convertEntityToDto(Part part){
+        modelMapper.getConfiguration()
+                .setMatchingStrategy(MatchingStrategies.LOOSE);
+        PartDTO partDTO = new PartDTO();
+        partDTO = modelMapper.map(part, PartDTO.class);
+        return partDTO;
     }
 }

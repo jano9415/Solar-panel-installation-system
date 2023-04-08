@@ -19,4 +19,10 @@ public interface BoxService {
     void placePartInEmptyBox(Long boxId, int placedAmount, Long partId);
 
     void placePartInBox(Long boxId, int placedAmount);
+
+    //Rekeszek lekérése a benne elhelyezkedő alkatrész id szerint
+    List<Box> findBoxesByPartId(Long partId);
+
+    //Alkatrész kivétele a rekeszből
+    void takePart(Long boxId, int numberOfPart, int selectedNumberOfPart, Long projectId);
 }

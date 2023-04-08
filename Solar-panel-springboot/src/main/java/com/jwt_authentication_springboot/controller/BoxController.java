@@ -49,4 +49,17 @@ public class BoxController {
     public void placePartInBox(@PathVariable Long boxId, @PathVariable int placedAmount){
         boxService.placePartInBox(boxId, placedAmount);
     }
+
+    //Rekeszek lekérése a benne elhelyezkedő alkatrész id szerint
+    @GetMapping("/findboxesbypartid/{partId}")
+    public List<Box> findBoxesByPartId(@PathVariable Long partId){
+        return boxService.findBoxesByPartId(partId);
+    }
+
+    //Alkatrész kivétele a rekeszből
+    @GetMapping("/takepart/{boxId}/{numberOfPart}/{selectedNumberOfPart}/{projectId}")
+    public void takePart(@PathVariable Long boxId, @PathVariable int numberOfPart,
+                         @PathVariable int selectedNumberOfPart, @PathVariable Long projectId){
+        boxService.takePart(boxId, numberOfPart, selectedNumberOfPart, projectId);
+    }
 }

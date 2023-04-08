@@ -37,21 +37,7 @@ public class TestController {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	@GetMapping("/findall")
-	public Proba findAll(){
 
-		Proba proba = new Proba();
-
-
-		List<ProjectPart> projectParts = projectPartService.findAll();
-		proba.setId(projectParts.get(0).getId());
-		proba.setPartId(projectParts.get(0).getPart().getId());
-		proba.setProjectId(projectParts.get(0).getProject().getId());
-
-		return proba;
-
-
-	}
 
 	@GetMapping("/findbyid/{id}")
 	public ProjectPart findById(@PathVariable Long id){

@@ -2,6 +2,8 @@ package com.jwt_authentication_springboot.service.serviceimpl;
 
 import com.jwt_authentication_springboot.model.Box;
 import com.jwt_authentication_springboot.model.Part;
+import com.jwt_authentication_springboot.model.Project;
+import com.jwt_authentication_springboot.model.ProjectPart;
 import com.jwt_authentication_springboot.repository.BoxRepository;
 import com.jwt_authentication_springboot.service.BoxService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,12 @@ public class BoxServiceImpl implements BoxService {
 
     @Autowired
     private PartServiceImpl partService;
+
+    @Autowired
+    private ProjectPartServiceImpl projectPartService;
+
+    @Autowired
+    private ProjectServiceImpl projectService;
 
     //Rekesz mentése
     @Override
@@ -88,5 +96,60 @@ public class BoxServiceImpl implements BoxService {
         part.setAllAvailableNumber(part.getAllAvailableNumber() + placedAmount);
         boxRepository.save(actualBox);
 
+    }
+
+    //Rekeszek lekérése a benne elhelyezkedő alkatrész id szerint
+    @Override
+    public List<Box> findBoxesByPartId(Long partId) {
+
+        List<Box> boxes = new ArrayList<Box>();
+
+        for(Box b : findAll()){
+            if(b.getPart() != null && b.getPart().equals(partService.findById(partId).getBody())){
+                boxes.add(b);
+            }
+        }
+
+        return boxes;
+
+    }
+
+    //Alkatrész kivétele a rekeszből
+    //Rekeszben lévő alkatérsz mennyiségének csökkentése. Ha eléri a nullát, akkor megszüntetem az alkatrész és rekesz
+    //összerendelést
+    //Összesen elérhető alkatrész mennyiségének csökkentése
+    //Összesen lefoglalt alkatrész mennyiségének csökkentése
+    //Projekt és alkatrész összerendelés frissítése. Ha eléri a nullát az alkatrész száma, akkor
+    //megszüntetem az alkatrész és a projekt összerendelését
+    @Override
+    public void takePart(Long boxId, int numberOfPart, int selectedNumberOfPart, Long projectId) {
+
+        Box box = findById(boxId).getBody();
+        Part part = box.getPart();
+        Project project = projectService.findById(projectId).getBody();
+        ProjectPart projectPart = projectPartService.findByProjectIdAndPartId(projectId, part.getId());
+
+        //Rekeszben megtalálható mennyiség csökkentése
+        box.setNumberOfProducts(box.getNumberOfProducts() - selectedNumberOfPart);
+
+        //Összerendelés megszüntetése, ha eléri a nullát
+        if(box.getNumberOfProducts() == 0){
+            box.setPart(null);
+        }
+        save(box);
+
+        //Összesen elérhető alkatrész mennyiségének csökkentése
+        part.setAllAvailableNumber(part.getAllAvailableNumber() - selectedNumberOfPart);
+
+        //Összesen lefoglalt alkatrész mennyiségének csökkentése
+        part.setAllReservedNumber(part.getAllReservedNumber() - selectedNumberOfPart);
+
+        //Projekt és alkatrész összerendelés frissítése
+        projectPart.setNumberOfParts(projectPart.getNumberOfParts() - selectedNumberOfPart);
+        projectPartService.save(projectPart);
+
+        if(projectPart.getNumberOfParts() == 0){
+            projectPartService.deleteProjectPart(projectPart.getId());
+        }
     }
 }

@@ -21,7 +21,7 @@ const ListReadyProjectsComponent = () => {
 
     return (
         <div>
-            <h2 className='text-center'>Projektek</h2>
+            <h2 className='text-center'>Projektek kivételezésre</h2>
             <div className='row' >
                 <table className='table table-striped table-bordered' >
                     <thead>

@@ -150,12 +150,26 @@ const placePartInEmptyBox = (boxId, placedAmount, partId) => {
 
 }
 
+//Rekeszek lekérése a benne elhelyezkedő alkatrész id szerint
+const findBoxesByPartId = (partId) => {
+
+    return axios.get(API_URL + "findboxesbypartid/" + partId);
+}
+
+//Alkatrész kivétele a rekeszből
+const takePart = (boxId, numberOfPart, selectedNumberOfPart, projectId) => {
+
+    return axios.get(API_URL + "takepart/" + boxId + "/" + numberOfPart + "/" + selectedNumberOfPart + "/" + projectId)
+
+}
+
 
 const BoxService = {
     findByPartId,
     findAll,
     placePartInBox,
-    placePartInEmptyBox
+    placePartInEmptyBox,
+    findBoxesByPartId,takePart
 
 };
 
