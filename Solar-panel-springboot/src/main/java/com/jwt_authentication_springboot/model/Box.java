@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Box {
+public class Box implements Comparable<Box>{
 
     @Id
     @GeneratedValue
@@ -31,4 +31,11 @@ public class Box {
     private Location location;
 
     private int numberOfProducts;
+
+
+    //Rekeszek rendezése benne található alkatrész szám szerint csökkenő sorrendbe
+    @Override
+    public int compareTo(Box o) {
+        return o.getNumberOfProducts() - this.numberOfProducts;
+    }
 }

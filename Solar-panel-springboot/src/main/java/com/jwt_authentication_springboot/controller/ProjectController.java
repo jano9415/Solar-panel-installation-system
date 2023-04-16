@@ -2,6 +2,7 @@ package com.jwt_authentication_springboot.controller;
 
 import com.jwt_authentication_springboot.model.Part;
 import com.jwt_authentication_springboot.model.Project;
+import com.jwt_authentication_springboot.payload.response.BestPathDTO;
 import com.jwt_authentication_springboot.payload.response.PartDTO;
 import com.jwt_authentication_springboot.service.serviceimpl.ProjectPartServiceImpl;
 import com.jwt_authentication_springboot.service.serviceimpl.ProjectServiceImpl;
@@ -61,9 +62,10 @@ public class ProjectController {
         return projectService.showFullCost(projectId);
     }
 
-    @GetMapping("/finishproject/{projectId}")
-    public void finishProject(@PathVariable Long projectId){
-        projectService.finishProject(projectId);
+    //Project lezárása
+    @GetMapping("/finishproject/{projectId}/{status}")
+    public void finishProject(@PathVariable Long projectId, @PathVariable String status){
+        projectService.finishProject(projectId, status);
     }
 
     //Projektek listázása kivételezésre
@@ -79,6 +81,12 @@ public class ProjectController {
     @GetMapping("/showpartsofproject/{projectId}")
     public List<PartDTO> showPartsOfProject(@PathVariable Long projectId){
         return projectService.showPartsOfProject(projectId);
+    }
+
+    //Legjobb útvonal listázása
+    @GetMapping("/bestpath/{projectId}")
+    public List<BestPathDTO> bestPath(@PathVariable Long projectId){
+        return projectService.bestPath(projectId);
     }
 
 

@@ -104,8 +104,8 @@ const showFullCost = (projectId) => {
 
 //Projekt lezárása.
 //Ha sikeres akkor "completed" fázsiba kerül. Ha nem, akkor "failed" fázisba.
-const finishProject = (projectId) => {
-    return axios.get(API_URL + "finishproject/" + projectId)
+const finishProject = (projectId, status) => {
+    return axios.get(API_URL + "finishproject/" + projectId + "/" + status)
 }
 
 //Projektek listázása kivételezésre
@@ -118,6 +118,11 @@ const showPartsOfProject = (projectId) => {
     return axios.get(API_URL + "showpartsofproject/" + projectId)
 }
 
+//Legjobb útvonal listázása
+const bestPath = (projectId) => {
+    return axios.get(API_URL + "bestpath/" + projectId)
+}
+
 const ProjectService = {
     findAll,
     createProject,
@@ -128,7 +133,8 @@ const ProjectService = {
     showFullCost,
     finishProject,
     listProjectsWithoutPreReservation,
-    showPartsOfProject
+    showPartsOfProject,
+    bestPath
 
 };
 

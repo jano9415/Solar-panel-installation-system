@@ -1,15 +1,14 @@
 package com.jwt_authentication_springboot.service.serviceimpl;
 
-import com.jwt_authentication_springboot.model.Box;
-import com.jwt_authentication_springboot.model.Part;
-import com.jwt_authentication_springboot.model.Project;
-import com.jwt_authentication_springboot.model.ProjectPart;
+import com.jwt_authentication_springboot.model.*;
 import com.jwt_authentication_springboot.repository.BoxRepository;
 import com.jwt_authentication_springboot.service.BoxService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,6 +120,7 @@ public class BoxServiceImpl implements BoxService {
     //Összesen lefoglalt alkatrész mennyiségének csökkentése
     //Projekt és alkatrész összerendelés frissítése. Ha eléri a nullát az alkatrész száma, akkor
     //megszüntetem az alkatrész és a projekt összerendelését
+    //Új státuszt adok a projekthez: "InProgress" státuszt
     @Override
     public void takePart(Long boxId, int numberOfPart, int selectedNumberOfPart, Long projectId) {
 
@@ -128,6 +128,9 @@ public class BoxServiceImpl implements BoxService {
         Part part = box.getPart();
         Project project = projectService.findById(projectId).getBody();
         ProjectPart projectPart = projectPartService.findByProjectIdAndPartId(projectId, part.getId());
+
+        //Új "InProgress" státusz hozzáadása a projekthez
+        projectService.addNewProjectStatus(projectId, "InProgress");
 
         //Rekeszben megtalálható mennyiség csökkentése
         box.setNumberOfProducts(box.getNumberOfProducts() - selectedNumberOfPart);
@@ -152,4 +155,6 @@ public class BoxServiceImpl implements BoxService {
             projectPartService.deleteProjectPart(projectPart.getId());
         }
     }
+
+
 }

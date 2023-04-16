@@ -11,6 +11,7 @@ const ShowPartsOfProjectComponent = () => {
     const [numberOfPart, setNumberOfPart] = useState()
     const [selectedNumberOfPart, setSelectedNumberOfPart] = useState()
 
+    //Projekt id
     const { id } = useParams();
 
     
@@ -49,7 +50,7 @@ const ShowPartsOfProjectComponent = () => {
     const takePart = (e, boxId, numberOfProducts, location) => {
         
 
-        if (selectedNumberOfPart > numberOfProducts) {
+        if (selectedNumberOfPart > numberOfProducts || selectedNumberOfPart > numberOfPart) {
             alert("Ennyi alkatrészt nem tudsz kivenni!")
         }
         else {
@@ -64,6 +65,19 @@ const ShowPartsOfProjectComponent = () => {
             )
 
         }
+    }
+
+    //Legjobb útvonal listázása
+    const bestPath = () => {
+        ProjectService.bestPath(id).then((response) => {
+            console.log(response.data)
+
+
+        },
+            (error) => {
+                console.log(error)
+            }
+        )
 
     }
 
@@ -71,6 +85,7 @@ const ShowPartsOfProjectComponent = () => {
     return (
         <div>
             <h2 className='text-center'>Alkatrészek a projekthez</h2>
+            <Link onClick={bestPath} className='btn btn-info m-1'>Legjobb útvonal</Link>
             <div className='row' >
                 <table className='table table-striped table-bordered' >
                     <thead>

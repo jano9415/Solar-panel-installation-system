@@ -1,23 +1,20 @@
 package com.jwt_authentication_springboot.service.serviceimpl;
 
-import com.jwt_authentication_springboot.model.Part;
-import com.jwt_authentication_springboot.model.Project;
-import com.jwt_authentication_springboot.model.ProjectPart;
-import com.jwt_authentication_springboot.model.ProjectStatus;
+import com.jwt_authentication_springboot.model.*;
+import com.jwt_authentication_springboot.payload.response.BestPathDTO;
 import com.jwt_authentication_springboot.payload.response.PartDTO;
 import com.jwt_authentication_springboot.repository.ProjectRepository;
 import com.jwt_authentication_springboot.service.ProjectService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +31,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     ProjectPartServiceImpl projectPartService;
+
+    @Autowired
+    @Lazy
+    private BoxServiceImpl boxService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -215,7 +216,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     //Árkalkuláció elkészítése. Ha minden alkatrész elérhető a raktárban, visszatér a költséggel és a project "scheduled" fázisba kerül.
-    //Ha nem érhető el minden alkatrész, akkor a költség 0 és a project "wait" fázisba kerül
+    //Ha nem érhető el minden alkatrész, tehát van előfoglalt alkatrész,
+    // akkor a költség 0 és a project "wait" fázisba kerül
     @Override
     public int showFullCost(Long projectId) {
         Project project = findById(projectId).getBody();
@@ -294,14 +296,18 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     //Projekt lezárása
+    //A bejövő paraméter "success" vagy "unsuccess"
+    //Ha sikeres akkor "completed" fázsiba kerül, ha nem, akkor "failed" fázisba.
+    //Itt még meg kell csinálni a sikertelen lezárás utáni törléseket
     @Override
-    public void finishProject(Long projectId) {
+    public void finishProject(Long projectId, String status) {
+        addNewProjectStatus(projectId, status);
 
     }
 
     //Projektek listázása kivételezésre
     //Csak olyan projekteket adok vissza, amelyeknek a kivételezését meg lehet kezdeni
-    //Tehát az adott projekthez nem tartozik előfoglalt alkatrész
+    //Tehát az adott projekthez nem tartozik előfoglalt alkatrész, csak lefoglalt alkatrész
     @Override
     public List<Project> listProjectsWithoutPreReservation() {
         List<Project> projects = new ArrayList<Project>();
@@ -362,8 +368,85 @@ public class ProjectServiceImpl implements ProjectService {
                 .map(this::convertEntityToDto)
                 .collect(Collectors.toList());*/
 
+    }
 
+    //Legjobb útvonal megkeresése az alkatrészek összegyűjtéséhez
+    //1. lépés: A legrövidebb út az, ha minden alkatrészt ki tudok venni egy rekeszből
+    //2. lépés: Ha nincs ilyen lehetőség egy adott alkatrészre, akkor törekszek arra, hogy a lehető legkevesebb
+    //rekeszből  gyűjtsem össze a szükséges alkatrész mennyiséget
+    //3. lépés: A végén pedig sorba rendezem az összegyűjtött pozíciókat
+    //Ezekből a lépésekből tevődik össze a legrövidebb útvonal
+    @Override
+    public List<BestPathDTO> bestPath(Long projectId) {
+        List<Part> parts = new ArrayList<>();
+        List<Location> locations = new ArrayList<>();
+        List<BestPathDTO> bestPathDTOS = new ArrayList<>();
 
+        //Projekthez tartozó alkatérszek és azok elhelyezkedésének keresése
+        for(ProjectPart projectPart : findById(projectId).getBody().getProjectParts()){
+
+            //Az adott alkatrész ezekben a rekeszekben található meg
+            List<Box> boxes = boxService.findBoxesByPartId(projectPart.getPart().getId());
+
+            //Rekeszek rendezése benne található alkatrész szám szerint csökkenő sorrendbe
+            Collections.sort(boxes);
+
+            //Egy rekeszből ki tudom venni a szükséges alkatrész mennyiséget
+            //Ez lenne a legrövidebb út. Minden alkatrészt egy rekszből ki tudok venni.
+            if(boxes.get(0).getNumberOfProducts() >= projectPart.getNumberOfParts()){
+                //BestPathDTO objektum összeállítása
+                BestPathDTO bestPathDTO = new BestPathDTO();
+                bestPathDTO.setPartName(projectPart.getPart().getPartName());
+                bestPathDTO.setPartNumber(projectPart.getNumberOfParts());
+                bestPathDTO.setRow(boxes.get(0).getLocation().getRow());
+                bestPathDTO.setCol(boxes.get(0).getLocation().getCol());
+                bestPathDTO.setCell(boxes.get(0).getLocation().getCell());
+
+                bestPathDTOS.add(bestPathDTO);
+
+            }
+            //Az alkatrészt nem tudom kivenni csak egy rekeszből
+            //Ezért végig kell nézni a rekeszeket, amik tartalmazzák az adott alaktrészt
+            else{
+                for(Box b : boxes){
+                    if(projectPart.getNumberOfParts() > 0){
+                        //Ha a szükséges alkatérsz mennyiség nagyobb, mint a rekeszben található
+                        if(projectPart.getNumberOfParts() > b.getNumberOfProducts()){
+
+                            //BestPathDTO objektum összeállítása
+                            BestPathDTO bestPathDTO = new BestPathDTO();
+                            bestPathDTO.setPartName(projectPart.getPart().getPartName());
+                            bestPathDTO.setPartNumber(b.getNumberOfProducts());
+                            bestPathDTO.setRow(b.getLocation().getRow());
+                            bestPathDTO.setCol(b.getLocation().getCol());
+                            bestPathDTO.setCell(b.getLocation().getCell());
+
+                            bestPathDTOS.add(bestPathDTO);
+                        }
+                        //Ha a szükséges alkatérsz mennyiség kisebb, mint a rekeszben található
+                        if(projectPart.getNumberOfParts() < b.getNumberOfProducts()){
+
+                            //BestPathDTO objektum összeállítása
+                            BestPathDTO bestPathDTO = new BestPathDTO();
+                            bestPathDTO.setPartName(projectPart.getPart().getPartName());
+                            bestPathDTO.setPartNumber(projectPart.getNumberOfParts());
+                            bestPathDTO.setRow(b.getLocation().getRow());
+                            bestPathDTO.setCol(b.getLocation().getCol());
+                            bestPathDTO.setCell(b.getLocation().getCell());
+
+                            bestPathDTOS.add(bestPathDTO);
+
+                            //Megvan az összes alkatrész mennyiség
+                            projectPart.setNumberOfParts(0);
+                        }
+                        projectPart.setNumberOfParts(projectPart.getNumberOfParts() - b.getNumberOfProducts());
+                    }
+                }
+            }
+        }
+        //Rendezés növekvő sorrendbe sor, oszlop majd rekesz szám szerint
+        Collections.sort(bestPathDTOS);
+        return bestPathDTOS;
     }
 
     //Alkatrész entity objektum konvertálása alkatrész DTO objektummá
@@ -373,5 +456,40 @@ public class ProjectServiceImpl implements ProjectService {
         PartDTO partDTO = new PartDTO();
         partDTO = modelMapper.map(part, PartDTO.class);
         return partDTO;
+    }
+
+    //Új státusz hozzáadása a projekthez
+    //Ha már tartalmaz ilyen státuszt, akkor nem adom hozzá
+    //Ha még nem, akkor létrehozom és hozzáadom
+    public void addNewProjectStatus(Long projectId, String status){
+
+        Project project = findById(projectId).getBody();
+        boolean statusAlredyExists = false;
+
+        //Megnézem, hogy a projet rendelkezik-e ilyen státusszal
+        for(ProjectStatus projectStatus : project.getProjectStatuses()){
+            if(projectStatus.getProjectCurrentStatus().equals(status)){
+                statusAlredyExists = true;
+            }
+        }
+
+        //Ha még nem rendelkezik ilyen státusszal, akkor létrehozom azt, majd összerendelem a projekttel
+        if(project.getProjectStatuses() != null && statusAlredyExists == false){
+            ProjectStatus projectStatus = new ProjectStatus();
+
+            DateTimeFormatter todayDateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+            String todayDate = todayDateFormat.format(now);
+
+            projectStatus.setProjectCurrentStatus(status);
+            projectStatus.setStatusChanged(todayDate);
+            projectStatusService.save(projectStatus);
+
+            project.getProjectStatuses().add(projectStatusService.findByStatusChanged(todayDate));
+            projectStatusService.findByStatusChanged(todayDate).setProject(project);
+
+            projectRepository.save(project);
+        }
+
     }
 }

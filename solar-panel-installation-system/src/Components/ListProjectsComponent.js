@@ -45,9 +45,10 @@ const ListProjectsComponent = () => {
     }
 
     //Projekt lezárása
-    const finishProject = (e, projectId) => {
+    const finishProject = (e, projectId, status) => {
         e.preventDefault();
-        ProjectService.finishProject(projectId).then((response) => {
+        ProjectService.finishProject(projectId, status).then((response) => {
+            alert("Projekt lezárva. A projekt ")
 
         },
             (error) => {
@@ -60,31 +61,32 @@ const ListProjectsComponent = () => {
     const showProjectStatuses = (e, projectStatuses) => {
         e.preventDefault();
 
-        /*alert("Id: " + projectStatuses[0].id + "\n" +
-            "Státusz: " + projectStatuses[0].projectCurrentStatus + "\n" +
-            "Dátum: " + projectStatuses[0].statusChanged + "\n\n" + 
-
-            "Id: " + projectStatuses[1].id + "\n" +
-            "Státusz: " + projectStatuses[1].projectCurrentStatus + "\n" +
-            "Dátum: " + projectStatuses[1].statusChanged
-
-        )*/
-
         for (let i = 0; i < projectStatuses.length; i++) {
             alert("Id: " + projectStatuses[i].id + "\n" +
-            "Státusz: " + projectStatuses[i].projectCurrentStatus + "\n" +
-            "Dátum: " + projectStatuses[i].statusChanged
+                "Státusz: " + projectStatuses[i].projectCurrentStatus + "\n" +
+                "Dátum: " + projectStatuses[i].statusChanged
 
-        )
-          }
+            )
+        }
 
     }
+
 
 
 
     return (
         <div>
             <h2 className='text-center'>Projektek</h2>
+            <label>Keresés projektstátusz alapján</label>
+            <select id="cars">
+                <option value="volvo">New</option>
+                <option value="saab">Draft</option>
+                <option value="opel">Wait</option>
+                <option value="audi">Scheduled</option>
+                <option value="audi">InProgress</option>
+                <option value="audi">Completed</option>
+                <option value="audi">Failed</option>
+            </select>
             <div className='row' >
                 <table className='table table-striped table-bordered' >
                     <thead>
@@ -125,7 +127,8 @@ const ListProjectsComponent = () => {
                                         <td>
                                             <Link onClick={(e) => showFullCost(e, project.id)} className='btn btn-info m-1'>Árkalkuláció</Link>
                                             <br />
-                                            <Link onClick={(e) => finishProject(e, project.id)} className='btn btn-info m-1'>Lezárás</Link>
+                                            <Link onClick={(e) => finishProject(e, project.id, "success")} className='btn btn-info m-1'>Sikeres</Link>
+                                            <Link onClick={(e) => finishProject(e, project.id, "unsuccess")} className='btn btn-info m-1'>Sikertelen</Link>
                                         </td>
                                     </tr>
                             )
