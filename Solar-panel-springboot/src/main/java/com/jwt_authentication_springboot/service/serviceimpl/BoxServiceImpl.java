@@ -71,20 +71,63 @@ public class BoxServiceImpl implements BoxService {
 
     //Alkatrész elhelyezése üres rekeszben
     //Átadom a rekesznek az alkatrészt, amit tárolni fog és az alkatrész mennyiségét
+    //Növelem az alkatrész összesen elérhető darabszámát
+    //Előfoglalások automatikus kezelése
     @Override
     public void placePartInEmptyBox(Long boxId, int placedAmount, Long partId) {
         Box actualBox = boxRepository.findById(boxId).get();
         Part part = partService.findById(partId).getBody();
 
-
+        //Alkatrész elhelyezése előfoglalástól függetlenül
         actualBox.setNumberOfProducts(actualBox.getNumberOfProducts() + placedAmount);
         part.setAllAvailableNumber(part.getAllAvailableNumber() + placedAmount);
         actualBox.setPart(part);
         boxRepository.save(actualBox);
+
+        //Alkatrész összes foglalt és előfoglalt mennyiség kezelése
+        //Ha van az adott alkatrészre előfoglalás
+        if(part.getPreReservedNumber() > 0){
+
+            //Ha a bejövő mennyiség nagyobb vagy egyenlő, mint az előfoglalt mennyiség
+            if(placedAmount >= part.getPreReservedNumber()){
+                part.setAllReservedNumber(part.getAllReservedNumber() + part.getPreReservedNumber());
+                part.setPreReservedNumber(0);
+            }
+            else{
+                part.setPreReservedNumber(part.getPreReservedNumber() - placedAmount);
+                part.setAllReservedNumber(part.getAllReservedNumber() + placedAmount);
+            }
+            partService.save(part);
+        }
+
+        //Alkatrész és projekt összerendelések kezelése
+        for(ProjectPart projectPart : part.getProjectParts()){
+            //Ha van olyan összerendelés, ahol az előfoglalt mennyiség nagyobb, mint 0
+            //és van még elhelyezendő alkatrész
+            if(projectPart.getPreReservedNumber() > 0 && placedAmount > 0){
+                //Ha a bejövő mennyiség nagyobb vagy egyenlő, mint az előfoglalt mennyiség
+                if(placedAmount >= projectPart.getPreReservedNumber()){
+                    projectPart.setNumberOfParts(projectPart.getNumberOfParts() + projectPart.getPreReservedNumber());
+                    placedAmount = placedAmount - projectPart.getPreReservedNumber();
+                    projectPart.setPreReservedNumber(0);
+
+                }
+                else{
+                    projectPart.setPreReservedNumber(projectPart.getPreReservedNumber() - placedAmount);
+                    projectPart.setNumberOfParts(projectPart.getNumberOfParts() + placedAmount);
+                    placedAmount = 0;
+                }
+
+            }
+            projectPartService.save(projectPart);
+        }
     }
 
     //Alkatrész elhelyezése nem üres rekeszben
     //A rekeszben már van ilyen típusú alkatrész, ezért csak a mennyiséget adom át
+    //Növelem az alkatrész összesen elérhető darabszámát
+    //Előfoglalások automatikus kezelése
+    //A két bevételező függvényt egybe kell majd kezelni
     @Override
     public void placePartInBox(Long boxId, int placedAmount) {
 
@@ -94,6 +137,50 @@ public class BoxServiceImpl implements BoxService {
         actualBox.setNumberOfProducts(actualBox.getNumberOfProducts() + placedAmount);
         part.setAllAvailableNumber(part.getAllAvailableNumber() + placedAmount);
         boxRepository.save(actualBox);
+
+        //Alkatrész elhelyezése előfoglalástól függetlenül
+        actualBox.setNumberOfProducts(actualBox.getNumberOfProducts() + placedAmount);
+        part.setAllAvailableNumber(part.getAllAvailableNumber() + placedAmount);
+        actualBox.setPart(part);
+        boxRepository.save(actualBox);
+
+        //Alkatrész összes foglalt és előfoglalt mennyiség kezelése
+        //Ha van az adott alkatrészre előfoglalás
+        if(part.getPreReservedNumber() > 0){
+
+            //Ha a bejövő mennyiség nagyobb vagy egyenlő, mint az előfoglalt mennyiség
+            if(placedAmount >= part.getPreReservedNumber()){
+                part.setAllReservedNumber(part.getAllReservedNumber() + part.getPreReservedNumber());
+                part.setPreReservedNumber(0);
+            }
+            else{
+                part.setPreReservedNumber(part.getPreReservedNumber() - placedAmount);
+                part.setAllReservedNumber(part.getAllReservedNumber() + placedAmount);
+            }
+            partService.save(part);
+        }
+
+        //Alkatrész és projekt összerendelések kezelése
+        for(ProjectPart projectPart : part.getProjectParts()){
+            //Ha van olyan összerendelés, ahol az előfoglalt mennyiség nagyobb, mint 0
+            //és van még elhelyezendő alkatrész
+            if(projectPart.getPreReservedNumber() > 0 && placedAmount > 0){
+                //Ha a bejövő mennyiség nagyobb vagy egyenlő, mint az előfoglalt mennyiség
+                if(placedAmount >= projectPart.getPreReservedNumber()){
+                    projectPart.setNumberOfParts(projectPart.getNumberOfParts() + projectPart.getPreReservedNumber());
+                    placedAmount = placedAmount - projectPart.getPreReservedNumber();
+                    projectPart.setPreReservedNumber(0);
+
+                }
+                else{
+                    projectPart.setPreReservedNumber(projectPart.getPreReservedNumber() - placedAmount);
+                    projectPart.setNumberOfParts(projectPart.getNumberOfParts() + placedAmount);
+                    placedAmount = 0;
+                }
+
+            }
+            projectPartService.save(projectPart);
+        }
 
     }
 

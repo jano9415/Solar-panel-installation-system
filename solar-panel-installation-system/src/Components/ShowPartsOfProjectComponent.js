@@ -10,11 +10,13 @@ const ShowPartsOfProjectComponent = () => {
     const [boxes, setBoxes] = useState([]);
     const [numberOfPart, setNumberOfPart] = useState()
     const [selectedNumberOfPart, setSelectedNumberOfPart] = useState()
+    //Leggjobb útvonal lista
+    const [locations, setLocations] = useState([])
 
     //Projekt id
     const { id } = useParams();
 
-    
+
 
     useEffect(() => {
         //Projektek lekérése, amik készen állnak a kivételezésre
@@ -48,7 +50,7 @@ const ShowPartsOfProjectComponent = () => {
 
     //Alkatrész kivétele a rekeszből
     const takePart = (e, boxId, numberOfProducts, location) => {
-        
+
 
         if (selectedNumberOfPart > numberOfProducts || selectedNumberOfPart > numberOfPart) {
             alert("Ennyi alkatrészt nem tudsz kivenni!")
@@ -70,6 +72,7 @@ const ShowPartsOfProjectComponent = () => {
     //Legjobb útvonal listázása
     const bestPath = () => {
         ProjectService.bestPath(id).then((response) => {
+            setLocations(response.data)
             console.log(response.data)
 
 
@@ -86,6 +89,20 @@ const ShowPartsOfProjectComponent = () => {
         <div>
             <h2 className='text-center'>Alkatrészek a projekthez</h2>
             <Link onClick={bestPath} className='btn btn-info m-1'>Legjobb útvonal</Link>
+            <div className='card bg-light mb-3'>
+                {
+                    locations.map(
+                        location =>
+                            <div>
+                                <span>{location.row}. sor </span>
+                                <span>{location.col}. oszlop </span>
+                                <span>{location.cell}. rekeszből vegyél ki </span>
+                                <span>{location.partNumber} darab </span>
+                                <span>{location.partName} alkatrészt.</span>
+                            </div>
+                    )
+                }
+            </div>
             <div className='row' >
                 <table className='table table-striped table-bordered' >
                     <thead>

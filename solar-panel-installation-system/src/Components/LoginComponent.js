@@ -31,14 +31,6 @@ const LoginComponent = () => {
         setMessage("");
         setLoading(true);
 
-        //Teszt adatok
-        /*
-        AuthService.login(userName, password);
-        setLoading(false);
-        navigate("/");
-        window.location.reload();
-        */
-
 
         AuthService.login(userName, password).then(
             () => {
