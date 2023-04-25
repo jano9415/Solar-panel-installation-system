@@ -31,19 +31,6 @@ const CreateOrModifyProjectComponent = () => {
 
             }
             )
-
-            //Teszt
-            /*
-            console.log(id)
-            let project = ProjectService.findById(id)
-            setProjectLocation(project.projectLocation)
-            setProjectDescription(project.projectDescription)
-            setCustomerData(project.customerData)
-            setWorkDuration(project.workDuration)
-            setWorkCost(project.workCost)
-            setProjectCurrentStatus(project.projectStatus.projectCurrentStatus)
-            setStatusChanged(project.projectStatus.statusChanged)
-            */
         }
     }, []);
 

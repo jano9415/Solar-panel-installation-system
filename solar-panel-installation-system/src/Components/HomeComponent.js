@@ -4,14 +4,8 @@ import AuthService from '../Service/AuthService';
 
 const HomeComponent = () => {
 
-    const [currentUser, setCurrentUser] = useState(undefined);
 
     useEffect(() => {
-        const user = AuthService.getCurrentUser()
-
-        if (user) {
-            setCurrentUser(user)
-        }
 
     }, [])
 
@@ -20,7 +14,12 @@ const HomeComponent = () => {
         <div>
             <h1>Solar panel installation system</h1>
             <div>
-                <span>Üdvözlünk </span>
+                {
+                    AuthService.getCurrentUser() && (
+                        <span>Üdvözlünk {AuthService.getCurrentUser().username}</span>
+                    )
+                }
+
 
 
 

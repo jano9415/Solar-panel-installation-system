@@ -27,13 +27,6 @@ const PartToProjectComponent = () => {
                 console.log(error)
             })
 
-        //Teszt
-        /*
-        setParts(PartService.getParts)
-        setProject(ProjectService.findById(id))
-        console.log(project)
-        */
-
     }, [])
 
     //Alkatrész lefoglalása

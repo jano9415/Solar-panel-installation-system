@@ -18,7 +18,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties({"project" , "part"})
-public class ProjectPart implements Serializable {
+public class ProjectPart implements Serializable, Comparable<ProjectPart> {
 
     @Id
     @GeneratedValue
@@ -35,4 +35,11 @@ public class ProjectPart implements Serializable {
     private int numberOfParts;
 
     private int preReservedNumber;
+
+    //ProjectPart objektumok rendezése előfoglalt alkatrész mennyiség szerint csökkenő sorrendbe
+    @Override
+    public int compareTo(ProjectPart o) {
+        return o.getPreReservedNumber() - this.getPreReservedNumber();
+    }
+
 }

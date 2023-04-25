@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ProjectService from '../Service/ProjectService';
-import Popup from 'reactjs-popup';
+
 
 const ListProjectsComponent = () => {
 
@@ -17,10 +17,6 @@ const ListProjectsComponent = () => {
                 console.log(error)
             }
         )
-
-        //setProjects(ProjectService.findAll);
-
-
 
     }, [])
 
@@ -48,7 +44,7 @@ const ListProjectsComponent = () => {
     const finishProject = (e, projectId, status) => {
         e.preventDefault();
         ProjectService.finishProject(projectId, status).then((response) => {
-            alert("Projekt lezárva. A projekt ")
+            alert("Projekt lezárva.")
 
         },
             (error) => {

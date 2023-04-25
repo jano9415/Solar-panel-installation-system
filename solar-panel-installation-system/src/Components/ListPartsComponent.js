@@ -16,12 +16,6 @@ const ListPartsComponent = () => {
                 console.log(error)
             })
 
-        //Teszt
-        /*
-        setParts(PartService.getParts)
-        console.log(AuthService.getCurrentUser().roles)
-        */
-
     }, [])
 
 

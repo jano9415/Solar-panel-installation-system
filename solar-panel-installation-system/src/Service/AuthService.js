@@ -14,49 +14,6 @@ const createUser = (username, email, password) => {
 
 //Bejelentkezés
 const login = (username, password) => {
-
-    //Teszt adatok
-    /*let expert = {
-        userName: "bela",
-        firstName: "László",
-        lastName: "Nagy",
-        emailAddress: "lacika@gmail.com",
-        role: "expert"
-    }
-    let storeEmployee = {
-        userName: "balazs",
-        firstName: "László",
-        lastName: "Nagy",
-        emailAddress: "lacika@gmail.com",
-        role: "storeemployee"
-    }
-    let storeLeader = {
-        userName: "laci",
-        firstName: "László",
-        lastName: "Nagy",
-        emailAddress: "lacika@gmail.com",
-        role: "storeleader"
-    }
-    let admin = {
-        userName: "geza",
-        firstName: "László",
-        lastName: "Nagy",
-        emailAddress: "lacika@gmail.com",
-        role: "admin"
-    }
-    if(userName === "expert"){
-        localStorage.setItem("user", JSON.stringify(expert));
-    }
-    if(userName === "storeemployee"){
-        localStorage.setItem("user", JSON.stringify(storeEmployee));
-    }
-    if(userName === "storeleader"){
-        localStorage.setItem("user", JSON.stringify(storeLeader));
-    }
-    if(userName === "admin"){
-        localStorage.setItem("user", JSON.stringify(admin));
-    }*/
-
     return axios.post(API_URL + "signin", {
         username,
         password

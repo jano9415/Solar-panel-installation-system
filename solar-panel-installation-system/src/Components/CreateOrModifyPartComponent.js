@@ -27,12 +27,6 @@ const CreateOrModifyPartComponent = () => {
         }
         else{
             //Új alkatrész hozzáadása
-
-            //Teszt
-            /*
-            PartService.createPart(part)
-            navigate("/listparts");
-            */
             
             console.log(part)
 
@@ -56,14 +50,6 @@ const CreateOrModifyPartComponent = () => {
             (error) => {
                 console.log(error)
             })
-
-            //Teszt
-            /*
-            let part = PartService.findById(id);
-            setPartName(part.partName)
-            setPrice(part.price)
-            setMaxPieceInBox(part.maxPieceInBox)
-            */
         }
 
     }, []);

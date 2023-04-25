@@ -39,14 +39,6 @@ const ListBoxesComponent = () => {
                 console.log(error)
             })
 
-        //Teszt
-        /*
-        setPart(PartService.findById(id));
-        setBoxes(BoxService.findByPartId);
-        */
-
-
-
     }, [])
 
     const placePart = (e, box) => {

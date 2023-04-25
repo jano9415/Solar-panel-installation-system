@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -99,6 +100,9 @@ public class BoxServiceImpl implements BoxService {
             }
             partService.save(part);
         }
+
+        //ProjectPart objektumok rendezése előfoglalt alkatrész mennyiség szerint csökkenő sorrendbe
+        //Collections.sort(part.getProjectParts());
 
         //Alkatrész és projekt összerendelések kezelése
         for(ProjectPart projectPart : part.getProjectParts()){

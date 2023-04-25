@@ -46,21 +46,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void save(Project project) {
 
-        ProjectStatus projectStatus = new ProjectStatus();
-
-        DateTimeFormatter todayDateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        String todayDate = todayDateFormat.format(now);
-
-        projectStatus.setProjectCurrentStatus("new");
-        projectStatus.setStatusChanged(todayDate);
-        projectStatusService.save(projectStatus);
-
-        project.getProjectStatuses().add(projectStatusService.findByStatusChanged(todayDate));
-        projectStatusService.findByStatusChanged(todayDate).setProject(project);
-
-
         projectRepository.save(project);
+        addNewProjectStatus(project.getId(), "new");
 
     }
 
@@ -125,6 +112,8 @@ public class ProjectServiceImpl implements ProjectService {
         partService.save(part);
 
 
+        addNewProjectStatus(projectId, "draft");
+        /*
         //Ha van már olyan státusza, hogy "draft", akkor nem adunk neki új státuszt
         for(ProjectStatus ps : project.getProjectStatuses()){
             if(ps.getProjectCurrentStatus().equals("draft")){
@@ -149,6 +138,7 @@ public class ProjectServiceImpl implements ProjectService {
 
             projectRepository.save(project);
         }
+         */
 
 
     }
@@ -187,7 +177,9 @@ public class ProjectServiceImpl implements ProjectService {
         part.setPreReservedNumber(part.getPreReservedNumber() + preReservedNumber);
         partService.save(part);
 
+        addNewProjectStatus(projectId, "draft");
 
+        /*
         //Ha van már olyan státusza, hogy "draft", akkor nem adunk neki új státuszt
         for(ProjectStatus ps : project.getProjectStatuses()){
             if(ps.getProjectCurrentStatus().equals("draft")){
@@ -212,6 +204,7 @@ public class ProjectServiceImpl implements ProjectService {
 
             projectRepository.save(project);
         }
+         */
 
     }
 
@@ -230,14 +223,17 @@ public class ProjectServiceImpl implements ProjectService {
         for(ProjectPart projectPart : project.getProjectParts()){
             //Nem lehet árkalkulációt készíteni
             if(projectPart.getPreReservedNumber() > 0){
+                addNewProjectStatus(projectId, "wait");
                 isPreReservation = true;
             }
             //Lehet árkalkulációt készíteni
             else{
+                addNewProjectStatus(projectId, "scheduled");
                 cost += projectPart.getPart().getPrice() * projectPart.getNumberOfParts();
             }
         }
 
+        /*
         //Megnézem, létezik-e már "scheduled" vagy "wait" státusz
         for(ProjectStatus projectStatus : project.getProjectStatuses()){
             if(projectStatus.getProjectCurrentStatus().equals("scheduled")){
@@ -284,6 +280,7 @@ public class ProjectServiceImpl implements ProjectService {
 
             projectRepository.save(project);
         }
+         */
 
         //Árkalkulációt nem lehet elkészíteni
         if(isPreReservation){
