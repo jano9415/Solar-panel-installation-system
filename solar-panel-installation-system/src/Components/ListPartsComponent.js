@@ -29,7 +29,7 @@ const ListPartsComponent = () => {
                 <Link to="/createpart" className='btn btn-primary mb-2'>Új alkatrész hozzáadása</Link>
             )}
             <div className='row' >
-                <table className='table table-striped table-bordered' >
+                <table className='table table-striped table-bordered text-center' >
                     <thead>
                         <tr>
                             <th>Név</th>

@@ -111,35 +111,8 @@ public class ProjectServiceImpl implements ProjectService {
         part.setAllReservedNumber(part.getAllReservedNumber() + reservedNumber);
         partService.save(part);
 
-
+        //Új státusz hozzáadása
         addNewProjectStatus(projectId, "draft");
-        /*
-        //Ha van már olyan státusza, hogy "draft", akkor nem adunk neki új státuszt
-        for(ProjectStatus ps : project.getProjectStatuses()){
-            if(ps.getProjectCurrentStatus().equals("draft")){
-                insertNewProjectStatus = false;
-            }
-        }
-
-        //Ha nincs még olyan státusza, hogy "draft", akkor adunk neki új státuszt
-        if(insertNewProjectStatus){
-            ProjectStatus projectStatus = new ProjectStatus();
-
-            DateTimeFormatter todayDateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
-            String todayDate = todayDateFormat.format(now);
-
-            projectStatus.setProjectCurrentStatus("draft");
-            projectStatus.setStatusChanged(todayDate);
-            projectStatusService.save(projectStatus);
-
-            project.getProjectStatuses().add(projectStatusService.findByStatusChanged(todayDate));
-            projectStatusService.findByStatusChanged(todayDate).setProject(project);
-
-            projectRepository.save(project);
-        }
-         */
-
 
     }
 
@@ -177,34 +150,8 @@ public class ProjectServiceImpl implements ProjectService {
         part.setPreReservedNumber(part.getPreReservedNumber() + preReservedNumber);
         partService.save(part);
 
+        //Új státusz hozzáadása
         addNewProjectStatus(projectId, "draft");
-
-        /*
-        //Ha van már olyan státusza, hogy "draft", akkor nem adunk neki új státuszt
-        for(ProjectStatus ps : project.getProjectStatuses()){
-            if(ps.getProjectCurrentStatus().equals("draft")){
-                insertNewProjectStatus = false;
-            }
-        }
-
-        //Ha nincs még olyan státusza, hogy "draft", akkor adunk neki új státuszt
-        if(insertNewProjectStatus){
-            ProjectStatus projectStatus = new ProjectStatus();
-
-            DateTimeFormatter todayDateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
-            String todayDate = todayDateFormat.format(now);
-
-            projectStatus.setProjectCurrentStatus("draft");
-            projectStatus.setStatusChanged(todayDate);
-            projectStatusService.save(projectStatus);
-
-            project.getProjectStatuses().add(projectStatusService.findByStatusChanged(todayDate));
-            projectStatusService.findByStatusChanged(todayDate).setProject(project);
-
-            projectRepository.save(project);
-        }
-         */
 
     }
 
@@ -215,90 +162,64 @@ public class ProjectServiceImpl implements ProjectService {
     public int showFullCost(Long projectId) {
         Project project = findById(projectId).getBody();
         boolean isPreReservation = false;
-        boolean isScheduledStatus = false;
-        boolean isWaitStatus = false;
+        boolean addScheduledStatus = true;
+        boolean addWaitStatus = true;
         int cost = 0;
 
         //Megnézem, hogy az adott projekthez tartozik-e előfoglalt alkatrész
         for(ProjectPart projectPart : project.getProjectParts()){
             //Nem lehet árkalkulációt készíteni
             if(projectPart.getPreReservedNumber() > 0){
-                addNewProjectStatus(projectId, "wait");
+                //Új státusz hozzáadása
+                //addNewProjectStatus(projectId, "wait");
                 isPreReservation = true;
             }
             //Lehet árkalkulációt készíteni
             else{
-                addNewProjectStatus(projectId, "scheduled");
+                //Új státusz hozzáadása
+                //addNewProjectStatus(projectId, "scheduled");
                 cost += projectPart.getPart().getPrice() * projectPart.getNumberOfParts();
             }
         }
 
-        /*
-        //Megnézem, létezik-e már "scheduled" vagy "wait" státusz
-        for(ProjectStatus projectStatus : project.getProjectStatuses()){
-            if(projectStatus.getProjectCurrentStatus().equals("scheduled")){
-                isScheduledStatus = true;
-            }
-            if(projectStatus.getProjectCurrentStatus().equals("wait")){
-                isWaitStatus = true;
-            }
-        }
-
-        //"scheduled" státusz létrehozása és projekthez rendelése
-        if(project.getProjectStatuses() != null && isPreReservation == false && isScheduledStatus == false){
-            ProjectStatus projectStatus = new ProjectStatus();
-
-            DateTimeFormatter todayDateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
-            String todayDate = todayDateFormat.format(now);
-
-            projectStatus.setProjectCurrentStatus("scheduled");
-            projectStatus.setStatusChanged(todayDate);
-            projectStatusService.save(projectStatus);
-
-            project.getProjectStatuses().add(projectStatusService.findByStatusChanged(todayDate));
-            projectStatusService.findByStatusChanged(todayDate).setProject(project);
-
-            projectRepository.save(project);
-        }
-
-        //"wait" státusz létrehozása és projekthez rendelése
-        if(project.getProjectStatuses() != null && isPreReservation && isWaitStatus == false){
-            ProjectStatus projectStatus = new ProjectStatus();
-
-            DateTimeFormatter todayDateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
-            String todayDate = todayDateFormat.format(now);
-
-            projectStatus.setProjectCurrentStatus("wait");
-            projectStatus.setStatusChanged(todayDate);
-            projectStatusService.save(projectStatus);
-
-            project.getProjectStatuses().add(projectStatusService.findByStatusChanged(todayDate));
-            projectStatusService.findByStatusChanged(todayDate).setProject(project);
-
-
-            projectRepository.save(project);
-        }
-         */
-
         //Árkalkulációt nem lehet elkészíteni
         if(isPreReservation){
+            addNewProjectStatus(projectId, "wait");
             return 0;
         }
 
         //Az árkalkuláció elkészült
+        addNewProjectStatus(projectId, "scheduled");
         return cost;
 
     }
 
     //Projekt lezárása
-    //A bejövő paraméter "success" vagy "unsuccess"
+    //A bejövő paraméter "completed" vagy "failed"
     //Ha sikeres akkor "completed" fázsiba kerül, ha nem, akkor "failed" fázisba.
-    //Itt még meg kell csinálni a sikertelen lezárás utáni törléseket
+    //Ha a státusz "failed", akkor projekt és alkatrész összerendelések törlése
+    //Adott alkatrészre vonatkozó foglalások és előfoglalások frissítése
     @Override
     public void finishProject(Long projectId, String status) {
+
+        Project project = findById(projectId).getBody();
+
+        //Új státusz hozzáadása
         addNewProjectStatus(projectId, status);
+
+        //Projekt és alkatrész összerendelések törlése
+        //Adott alkatrészre vonatkozó foglalások és előfoglalások frissítése
+        if(status.equals("failed") && project.getProjectParts() != null){
+            for(ProjectPart projectPart : project.getProjectParts()){
+                //Adott alkatrész összesen lefoglalt mennyiségének csökkentése
+                projectPart.getPart().setAllReservedNumber(projectPart.getPart().getAllReservedNumber() - projectPart.getNumberOfParts());
+                //Adott alkatrész összesen előfoglalt mennyiségének csökkentése
+                projectPart.getPart().setPreReservedNumber(projectPart.getPart().getPreReservedNumber() - projectPart.getPreReservedNumber());
+                System.out.println("Az id: " + projectPart.getId());
+                //Összerendelt objektum törlése
+                projectPartService.deleteProjectPart(projectPart.getId());
+            }
+        }
 
     }
 
@@ -444,6 +365,39 @@ public class ProjectServiceImpl implements ProjectService {
         //Rendezés növekvő sorrendbe sor, oszlop majd rekesz szám szerint
         Collections.sort(bestPathDTOS);
         return bestPathDTOS;
+    }
+
+    //Projektek lekérése
+    //Visszaadom a folyamatban lévő projekteket vagy a lezárt porjekteket
+    //Folyamatban lévő projekt - ha nincs olyan státusza, hogy "completed" vagy "failed"
+    //Lezárt projekt - ha van olyan státusza, hogy "completed" vagy "failed"
+    @Override
+    public List<Project> findByProjectStatus(String status) {
+        List<Project> projects = projectRepository.findAll();
+
+        List<Project> inProgressProjects = new ArrayList<>();
+        List<Project> finishedProject = new ArrayList<>();
+        boolean addToInProgressProjects;
+
+        for(Project p : projects){
+            addToInProgressProjects = false;
+            for(ProjectStatus ps : p.getProjectStatuses()){
+                if(ps.getProjectCurrentStatus().equals("completed") || ps.getProjectCurrentStatus().equals("failed")){
+                    addToInProgressProjects = true;
+                }
+            }
+            if(addToInProgressProjects){
+                finishedProject.add(p);
+            }
+            else{
+                inProgressProjects.add(p);
+            }
+        }
+
+        if(status.equals("inprogress")){
+            return inProgressProjects;
+        }
+        return finishedProject;
     }
 
     //Alkatrész entity objektum konvertálása alkatrész DTO objektummá

@@ -43,4 +43,8 @@ public interface ProjectService {
 
     //Legjobb útvonal megkeresése az alkatrészek összegyűjtéséhez
     List<BestPathDTO> bestPath(Long projectId);
+
+    //Projektek lekérése
+    //Folyamatban lévő projektek vagy lezárt projektek
+    List<Project> findByProjectStatus(String status);
 }

@@ -76,7 +76,7 @@ const ListBoxesComponent = () => {
         <div>
             <h2 className='text-center'>Rekeszek</h2>
             <div className='row' >
-                <table className='table table-striped table-bordered' >
+                <table className='table table-striped table-bordered text-center' >
                     <thead>
                         <tr>
                             <th>Rekesz id</th>

@@ -33,12 +33,12 @@ const findById = (id) => {
 //Alkatrész lefoglalása
 const reservePart = (projectId, partId, reservedNumber) => {
 
-    return axios.get(API_URL + "reservepart/" +  projectId + "/" + partId + "/" + reservedNumber)
+    return axios.get(API_URL + "reservepart/" + projectId + "/" + partId + "/" + reservedNumber)
 }
 
 //Előfoglalás leadása az alkatrészre
 const preReservePart = (projectId, partId, preReservedNumber) => {
-    return axios.get(API_URL + "prereservepart/" + projectId + "/" +  partId + "/" + preReservedNumber)
+    return axios.get(API_URL + "prereservepart/" + projectId + "/" + partId + "/" + preReservedNumber)
 
 }
 
@@ -69,6 +69,14 @@ const bestPath = (projectId) => {
     return axios.get(API_URL + "bestpath/" + projectId)
 }
 
+
+//Projektek lekérése
+//Folyamatban lévő projektek vagy lezárt projektek
+const findByProjectStatus = (status) => {
+    return axios.get(API_URL + "findbyprojectstatus/" + status)
+
+}
+
 const ProjectService = {
     findAll,
     createProject,
@@ -80,7 +88,8 @@ const ProjectService = {
     finishProject,
     listProjectsWithoutPreReservation,
     showPartsOfProject,
-    bestPath
+    bestPath,
+    findByProjectStatus
 
 };
 

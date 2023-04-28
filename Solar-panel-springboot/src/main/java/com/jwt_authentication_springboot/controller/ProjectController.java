@@ -89,6 +89,14 @@ public class ProjectController {
         return projectService.bestPath(projectId);
     }
 
+    //Projektek lekérése
+    //Folyamatban lévő projektek vagy lezárt projektek
+    @GetMapping("/findbyprojectstatus/{status}")
+    public List<Project> findByProjectStatus(@PathVariable String status){
+        return projectService.findByProjectStatus(status);
+
+    }
+
 
 
 

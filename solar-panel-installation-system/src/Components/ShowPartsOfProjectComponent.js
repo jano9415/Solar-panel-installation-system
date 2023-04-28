@@ -104,7 +104,7 @@ const ShowPartsOfProjectComponent = () => {
                 }
             </div>
             <div className='row' >
-                <table className='table table-striped table-bordered' >
+                <table className='table table-striped table-bordered text-center' >
                     <thead>
                         <tr>
                             <th>Név</th>
